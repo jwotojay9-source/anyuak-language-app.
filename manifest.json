@@ -1,0 +1,16 @@
+{
+  "name": "Anyuak Translator",
+  "short_name": "Anyuak",
+  "description": "Anyuak Language Translator and Learning App",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f0f4f1",
+  "theme_color": "#2a6e4e",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/197/197593.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
