@@ -1,0 +1,3076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2a6e4e">
+<title>Anyuak Translator · Global Cloud Premium</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --bg:#f0f4f1;--surface:#ffffff;--surface2:#f7faf8;
+  --text:#1a2e24;--text2:#5a7a68;--text3:#8aaa96;
+  --green:#2a6e4e;--green2:#1d4f38;--green3:#3d9970;--green-light:#e8f5ed;
+  --gold:#e8a020;--purple:#7c4dcc;--red:#c0392b;--blue:#2471a3;
+  --border:#dde8e2;--border2:#c8ddd2;
+  --radius:16px;--radius-sm:10px;--radius-lg:24px;
+  --shadow:0 2px 12px rgba(42,110,78,0.08);--shadow-lg:0 8px 32px rgba(42,110,78,0.14);
+  --font-display:'Playfair Display',Georgia,serif;
+  --font-body:'DM Sans',system-ui,sans-serif;
+}
+
+body.theme-dark{
+  --bg:#0d1a13;--surface:#172212;--surface2:#1e2e1a;
+  --text:#e2f0e8;--text2:#8ab89a;--text3:#567060;
+  --green:#4ca870;--green2:#3a8058;--green3:#5dc080;--green-light:#152212;
+  --border:#243020;--border2:#2a3a28;
+}
+
+body.theme-warm{
+  --bg:#fdf6ee;--surface:#fff8f0;--surface2:#faf0e4;
+  --text:#3b2a1a;--text2:#7a5c3a;--text3:#b09070;
+  --green:#8b5e3c;--green2:#6b4028;--green3:#c07a4a;--green-light:#faeede;
+  --gold:#d4a020;--border:#e8d8c0;--border2:#d8c8a8;
+}
+
+body{background:var(--bg);font-family:var(--font-body);font-size:14px;line-height:1.5;color:var(--text);transition:background .3s,color .3s;}
+.app{max-width:480px;margin:0 auto;background:var(--surface);min-height:100vh;display:flex;flex-direction:column;box-shadow:var(--shadow-lg);}
+
+/* ── HEADER ── */
+.header{background:linear-gradient(140deg,var(--green) 0%,var(--green2) 100%);padding:12px 14px 10px;position:relative;}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;}
+.app-name{font-family:var(--font-display);font-size:1.2rem;color:#fff;letter-spacing:.5px;}
+.app-name em{font-style:italic;opacity:.85;font-size:.95rem;}
+.header-actions{display:flex;gap:5px;align-items:center;}
+.hbtn{background:rgba(255,255,255,.15);border:none;color:#fff;font-size:.6rem;padding:4px 8px;border-radius:30px;cursor:pointer;font-family:var(--font-body);transition:background .2s;}
+.hbtn:hover{background:rgba(255,255,255,.28);}
+.status-bar{font-size:.55rem;color:rgba(255,255,255,.7);margin-top:2px;display:flex;align-items:center;gap:5px;}
+.status-dot{width:5px;height:5px;border-radius:50%;background:#4ade80;display:inline-block;}
+.status-dot.saving{background:var(--gold);}
+.status-dot.error{background:#f87171;}
+
+#vpnBanner{display:none;background:#c0392b;color:#fff;padding:8px 14px;font-size:.72rem;text-align:center;font-weight:600;}
+
+.content{padding:12px;flex:1;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px;box-shadow:var(--shadow);}
+.card-title{font-size:.58rem;font-weight:600;color:var(--green);text-transform:uppercase;margin-bottom:8px;letter-spacing:.8px;display:flex;align-items:center;gap:6px;}
+
+.wod{background:linear-gradient(120deg,var(--green-light),var(--surface));border-left:3px solid var(--green);border-radius:var(--radius-sm);padding:9px 12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
+.wod-label{font-size:.52rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
+.wod-eng{font-weight:600;font-size:.9rem;color:var(--text);}
+.wod-any{font-family:var(--font-display);font-size:1rem;color:var(--green);font-style:italic;}
+
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px;}
+.stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px;text-align:center;}
+.stat-num{font-size:1.3rem;font-weight:700;color:var(--green);line-height:1;}
+.stat-lbl{font-size:.52rem;color:var(--text3);margin-top:2px;}
+
+.login-card{background:linear-gradient(135deg,var(--green-light),var(--surface));border:1px solid var(--border);border-radius:var(--radius);padding:10px;margin-bottom:10px;}
+.user-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.avatar{width:32px;height:32px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.95rem;flex-shrink:0;overflow:hidden;}
+.user-name{font-size:.78rem;font-weight:600;color:var(--text);}
+.badge{padding:2px 7px;border-radius:20px;font-size:.52rem;font-weight:700;}
+.badge-premium{background:var(--purple);color:#fff;}
+.badge-free{background:var(--text3);color:#fff;}
+.user-meta{font-size:.58rem;color:var(--text2);margin-top:2px;}
+.btn-row{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;}
+.btn{flex:1;min-width:56px;background:var(--green);border:none;padding:7px 9px;color:#fff;font-weight:600;font-size:.68rem;cursor:pointer;border-radius:30px;font-family:var(--font-body);transition:all .2s;}
+.btn:hover{background:var(--green2);}
+.btn:active{transform:scale(.97);}
+.btn-outline{background:transparent;border:1.5px solid var(--green);color:var(--green);}
+.btn-outline:hover{background:var(--green);color:#fff;}
+.btn-danger{background:var(--red);}
+.btn-danger:hover{background:#a93226;}
+.btn-gold{background:var(--gold);color:#1a2e24;}
+.btn-purple{background:var(--purple);}
+.btn-sm{padding:5px 9px;font-size:.6rem;flex:0 1 auto;}
+
+.expiry-warn{background:linear-gradient(120deg,#e67e22,#d35400);color:#fff;padding:7px 12px;border-radius:var(--radius-sm);margin-bottom:8px;font-size:.7rem;display:none;}
+
+.free-limit-bar{background:var(--green-light);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:7px 10px;margin-bottom:9px;display:flex;align-items:center;justify-content:space-between;gap:7px;}
+.free-limit-bar .limit-text{font-size:.6rem;color:var(--text2);}
+.free-limit-bar .limit-count{font-size:.7rem;font-weight:700;color:var(--green);}
+.free-limit-bar .limit-bar-wrap{flex:1;height:5px;background:var(--border);border-radius:10px;overflow:hidden;}
+.free-limit-bar .limit-bar-fill{height:100%;background:var(--green);border-radius:10px;transition:width .4s;}
+.free-limit-bar .limit-bar-fill.danger{background:var(--red);}
+
+.tabs{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:30px;padding:3px;gap:3px;margin-bottom:10px;}
+.tab{flex:1;background:transparent;border:none;color:var(--text2);padding:7px;font-size:.7rem;font-weight:600;cursor:pointer;border-radius:28px;font-family:var(--font-body);transition:all .2s;}
+.tab.active{background:var(--green);color:#fff;}
+.quiz-panel{display:none;}
+.quiz-panel.active{display:block;}
+
+.quiz-controls{display:flex;gap:7px;margin-bottom:9px;}
+.quiz-q{font-size:1rem;font-weight:600;text-align:center;padding:14px;background:var(--green-light);border-radius:var(--radius-sm);margin-bottom:12px;color:var(--text);}
+.quiz-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.quiz-option{background:var(--surface2);border:1.5px solid var(--border);padding:11px;font-size:.82rem;cursor:pointer;text-align:center;border-radius:30px;font-family:var(--font-body);transition:all .2s;}
+.quiz-option:hover{border-color:var(--green);background:var(--green-light);}
+.quiz-option.correct{background:#2e7d32;color:#fff;border-color:#2e7d32;}
+.quiz-option.wrong{background:var(--red);color:#fff;border-color:var(--red);}
+.quiz-result-msg{text-align:center;font-size:.82rem;padding:9px;margin-top:8px;display:none;}
+.quiz-result-msg.show{display:block;}
+.quiz-score{text-align:center;font-size:.68rem;color:var(--green);margin-top:8px;}
+.quiz-next{width:100%;border-radius:30px;margin-top:7px;}
+
+textarea,input[type=text],input[type=password],select{width:100%;padding:9px 12px;border:1.5px solid var(--border);background:var(--surface);font-size:.82rem;font-family:var(--font-body);outline:none;color:var(--text);border-radius:var(--radius-sm);transition:border .2s;margin-bottom:5px;}
+textarea:focus,input:focus,select:focus{border-color:var(--green);}
+textarea{resize:vertical;min-height:48px;}
+
+.input-wrap{position:relative;}
+.suggestions{position:absolute;bottom:calc(100% + 2px);left:0;right:0;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);max-height:150px;overflow-y:auto;z-index:100;display:none;box-shadow:var(--shadow-lg);}
+.suggestions.show{display:block;}
+.sug-item{padding:7px 11px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;font-size:.78rem;}
+.sug-item:hover{background:var(--green-light);}
+.sug-any{color:var(--green);font-style:italic;}
+
+.result-box{background:var(--green-light);border-radius:var(--radius-sm);padding:11px;margin-top:9px;}
+.result-text{font-family:var(--font-display);font-size:1.2rem;font-weight:600;color:var(--green);text-align:center;}
+.result-pron{font-size:.62rem;color:var(--text3);margin-top:3px;text-align:center;}
+.result-extras{margin-top:7px;display:none;}
+.extra-line{font-size:.68rem;color:var(--text2);padding:3px 0;border-top:1px dashed var(--border);}
+.extra-line strong{color:var(--green);}
+.share-row{display:flex;gap:5px;margin-top:7px;justify-content:center;}
+.share-btn{flex:0 1 auto;padding:5px 11px;font-size:.68rem;background:var(--surface);border:1px solid var(--border2);color:var(--text2);border-radius:20px;cursor:pointer;font-family:var(--font-body);}
+.share-wa{border-color:#25D366;color:#25D366;}
+.share-copy{border-color:var(--green);color:var(--green);}
+.speak-btn{width:32px;height:32px;background:var(--green);color:#fff;border:none;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-left:8px;vertical-align:middle;cursor:pointer;flex-shrink:0;font-size:.9rem;}
+.speak-btn:active{transform:scale(.9);}
+
+.stats-bottom{display:flex;justify-content:space-between;background:var(--green-light);padding:7px 10px;margin-bottom:10px;font-size:.62rem;font-weight:500;color:var(--green);border-radius:30px;}
+
+.dict-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+.search-row{display:flex;gap:5px;margin-bottom:7px;}
+.search-row input{margin-bottom:0;flex:1;}
+.word-list{max-height:380px;overflow-y:auto;display:none;}
+.word-list.show{display:block;}
+.dict-group-header{background:var(--green);color:#fff;padding:4px 12px;font-weight:700;font-size:.75rem;border-radius:4px;margin:8px 0 4px;letter-spacing:.5px;}
+
+.word-item{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:background .2s;}
+.word-item:hover{background:var(--surface2);}
+.word-info{flex:1;padding-right:5px;}
+.word-pair{font-size:.78rem;font-weight:500;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.wp-eng{background:var(--surface2);padding:2px 6px;border-radius:20px;color:var(--text);}
+.wp-any{background:var(--green-light);padding:2px 6px;border-radius:20px;color:var(--green);font-style:italic;}
+.word-meta{font-size:.52rem;color:var(--text3);margin-top:2px;}
+.word-acts{display:flex;gap:3px;align-items:center;flex-shrink:0;}
+.icon-btn{background:transparent;border:1px solid var(--border);color:var(--text3);padding:4px 6px;font-size:.58rem;cursor:pointer;border-radius:20px;font-family:var(--font-body);}
+.icon-btn:hover{border-color:var(--green);color:var(--green);}
+.fav-on{color:var(--gold);border-color:var(--gold);background:rgba(232,160,32,.1);}
+
+#recentSection{display:none;margin-bottom:10px;}
+.recent-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+#recentList{display:flex;gap:5px;overflow-x:auto;padding-bottom:3px;}
+
+/* ── ADMIN PANEL ── */
+.admin-panel{background:var(--surface);border:2px solid var(--gold);border-radius:var(--radius);padding:12px;margin-bottom:10px;display:none;}
+.admin-panel.show{display:block;}
+.admin-title{font-size:.7rem;font-weight:700;color:var(--gold);margin-bottom:7px;display:flex;align-items:center;gap:5px;}
+.admin-sec{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px;margin-bottom:9px;}
+.admin-sec-title{font-size:.58rem;font-weight:700;color:var(--green);margin-bottom:7px;text-transform:uppercase;letter-spacing:.6px;}
+.field-label{font-size:.58rem;color:var(--text2);display:block;margin-bottom:2px;margin-top:5px;}
+.scroll-box{max-height:200px;overflow-y:auto;}
+.user-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px;margin-bottom:5px;font-size:.7rem;}
+.user-item-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:3px;}
+.user-item-id{font-weight:700;color:var(--text);word-break:break-all;font-size:.72rem;}
+.user-item-status{font-size:.58rem;}
+.pending-word{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:5px;}
+.admin-buttons{display:flex;gap:4px;}
+.approve{background:#2e7d32;padding:3px 9px;font-size:.62rem;border-radius:30px;color:#fff;border:none;cursor:pointer;}
+.reject{background:#c62828;padding:3px 9px;font-size:.62rem;border-radius:30px;color:#fff;border:none;cursor:pointer;}
+.badge-owner{background:var(--gold);color:#1a2e24;padding:2px 7px;border-radius:30px;font-size:.58rem;font-weight:bold;}
+
+/* ── BULK IMPORT ENHANCED ── */
+.bulk-format-hint{background:var(--surface);border:1px dashed var(--border2);border-radius:var(--radius-sm);padding:7px 10px;margin-bottom:7px;font-size:.6rem;color:var(--text2);line-height:1.7;}
+.bulk-format-hint code{background:var(--green-light);color:var(--green);padding:1px 5px;border-radius:4px;font-family:monospace;font-size:.62rem;}
+.bulk-preview{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);max-height:140px;overflow-y:auto;margin-bottom:7px;display:none;}
+.bulk-preview.show{display:block;}
+.bulk-preview-row{display:flex;justify-content:space-between;align-items:center;padding:5px 9px;border-bottom:1px solid var(--border);font-size:.65rem;}
+.bulk-preview-row:last-child{border-bottom:none;}
+.bulk-ok{color:var(--green);}
+.bulk-warn{color:var(--gold);}
+.bulk-err{color:var(--red);}
+.bulk-stats{display:flex;gap:10px;font-size:.65rem;margin-bottom:7px;padding:5px 9px;background:var(--green-light);border-radius:var(--radius-sm);}
+
+/* ── WORD EXPORT ── */
+.export-row{display:flex;gap:5px;flex-wrap:wrap;}
+
+/* ── MODALS ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:5000;padding:14px;overflow-y:auto;}
+.modal{background:var(--surface);max-width:360px;width:100%;border-radius:var(--radius-lg);padding:18px;text-align:center;border:1px solid var(--border2);max-height:92vh;overflow-y:auto;}
+.modal h3{font-family:var(--font-display);color:var(--green);margin-bottom:9px;}
+
+.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:var(--green2);color:#fff;padding:7px 16px;border-radius:30px;font-size:.72rem;z-index:9999;animation:toastAnim 3.2s ease forwards;max-width:290px;text-align:center;white-space:pre-line;}
+@keyframes toastAnim{0%{opacity:1;bottom:56px}8%{opacity:1;bottom:70px}70%{opacity:1;bottom:70px}100%{opacity:0;bottom:86px}}
+
+.footer{text-align:center;padding:9px;border-top:1px solid var(--border);background:var(--surface);margin-top:auto;}
+.footer-text{font-size:.62rem;color:var(--green);font-weight:500;}
+.copyright{font-size:.52rem;color:var(--text3);margin-top:2px;}
+
+.result-locked-pron{text-align:center;padding:10px 0;}
+.result-locked-pron .lock-title{font-size:1rem;font-weight:700;color:var(--green);margin-bottom:4px;}
+.result-locked-pron .lock-sub{font-size:.68rem;color:var(--text2);margin-bottom:10px;}
+
+.clear-trans-bar{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 10px;margin-bottom:9px;font-size:.65rem;color:var(--text2);}
+
+.theme-picker{display:flex;gap:4px;}
+.theme-dot{width:18px;height:18px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:border-color .2s;}
+.theme-dot.active{border-color:var(--text);}
+.theme-dot.light{background:linear-gradient(135deg,#f0f4f1,#ffffff);}
+.theme-dot.dark{background:linear-gradient(135deg,#0d1a13,#172212);}
+.theme-dot.warm{background:linear-gradient(135deg,#fdf6ee,#8b5e3c);}
+
+/* ── CALCULATOR VAULT ── */
+.calc-display {
+  font-size: 1.8rem;
+  background: #000;
+  color: #0f0;
+  border: 1px solid #0f0;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+}
+.calc-keypad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.calc-btn {
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 12px 0;
+  background: #111;
+  border: 1px solid #333;
+  color: #0f0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background .2s;
+}
+.calc-btn:hover {
+  background: #222;
+  color: #0f0;
+}
+.calc-btn-danger {
+  background: #8b0000;
+  color: #fff;
+  border-color: #a00;
+}
+.calc-btn-danger:hover {
+  background: #b00000;
+  color: #fff;
+}
+.calc-btn-warning {
+  background: #b8860b;
+  color: #fff;
+  border-color: #d4af37;
+}
+.calc-btn-warning:hover {
+  background: #d4af37;
+  color: #000;
+}
+
+/* Vault media gallery & tabs */
+.calc-vault-modal {
+  color: var(--text);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  text-align: left;
+}
+.calc-vault-modal .d-flex { display: flex !important; }
+.calc-vault-modal .justify-content-between { justify-content: space-between !important; }
+.calc-vault-modal .align-items-center { align-items: center !important; }
+.calc-vault-modal .mb-3 { margin-bottom: 1rem !important; }
+.calc-vault-modal .ms-2 { margin-left: 0.5rem !important; }
+.calc-vault-modal .me-2 { margin-right: 0.5rem !important; }
+.calc-vault-modal .text-center { text-align: center !important; }
+.calc-vault-modal .text-end { text-align: right !important; }
+.calc-vault-modal .text-muted { color: var(--text2) !important; }
+.calc-vault-modal .row { display: flex; flex-wrap: wrap; margin-right: -4px; margin-left: -4px; }
+.calc-vault-modal .g-2 > * { padding-right: 4px; padding-left: 4px; }
+.calc-vault-modal .col-3 { flex: 0 0 auto; width: 25%; }
+.calc-vault-modal .col-6 { flex: 0 0 auto; width: 50%; }
+.calc-vault-modal .col-md-4 { flex: 0 0 auto; width: 33.333333%; }
+.calc-vault-modal .py-3 { padding-top: 0.75rem !important; padding-bottom: 0.75rem !important; }
+.calc-vault-modal .form-control {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+}
+.calc-vault-modal .form-control-sm { padding: 5px 9px; font-size: .78rem; }
+.calc-vault-modal .nav-tabs {
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 4px;
+  list-style: none;
+  padding: 0;
+  margin-bottom: 15px;
+}
+.calc-vault-modal .nav-tabs .nav-link {
+  color: var(--text2);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  padding: 6px 14px;
+  background: var(--surface2);
+  font-size: .78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.calc-vault-modal .nav-tabs .nav-link.active {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
+.calc-vault-modal .tab-content > .tab-pane { display: none; }
+.calc-vault-modal .tab-content > .tab-pane.active,
+.calc-vault-modal .tab-content > .tab-pane.show { display: block; }
+.calc-vault-modal .media-item {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--surface2);
+}
+.calc-vault-modal .media-item img,
+.calc-vault-modal .media-item video {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+.calc-vault-modal .delete-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(220, 38, 38, 0.85);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+}
+.calc-vault-modal .delete-btn:hover {
+  background: rgba(220, 38, 38, 1);
+}
+.calc-vault-modal .list-group-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: .75rem;
+}
+</style>
+</head>
+<body>
+<div id="vpnBanner">⚠️ VPN Detected — Please disable your VPN for this app to work correctly.</div>
+<div class="app">
+
+  <div class="header">
+    <div class="header-top">
+      <div class="app-name" id="appName">Anyuak <em>Translator</em></div>
+      <div class="header-actions">
+        <button class="hbtn" id="calcVaultBtn" title="Calculator Vault">🧮</button>
+        <button class="hbtn" id="shareAppBtn" title="Share App">🔗</button>
+        <div class="theme-picker" id="themePicker" title="Choose Theme">
+          <div class="theme-dot light active" data-theme="light" title="Light"></div>
+          <div class="theme-dot dark" data-theme="dark" title="Dark"></div>
+          <div class="theme-dot warm" data-theme="warm" title="Warm"></div>
+        </div>
+        <button class="hbtn" id="langBtn">Any</button>
+      </div>
+    </div>
+    <div class="status-bar">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusText">Connecting...</span>
+      <button id="retryBtn" style="display:none;background:rgba(255,255,255,0.2);border:none;color:#fff;font-size:0.5rem;padding:2px 5px;border-radius:4px;cursor:pointer;margin-left:5px;">Retry</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="wod" id="wodCard">
+      <div>
+        <div class="wod-label">Word of the Day</div>
+        <div class="wod-eng" id="wodEng">Loading...</div>
+      </div>
+      <div class="wod-any" id="wodAny">...</div>
+    </div>
+
+    <div class="expiry-warn" id="expiryWarn"></div>
+
+    <div class="free-limit-bar" id="freeLimitBar" style="display:none;">
+      <div>
+        <div class="limit-text">Free words used</div>
+        <div class="limit-count" id="limitCountText">0 / 10</div>
+      </div>
+      <div class="limit-bar-wrap">
+        <div class="limit-bar-fill" id="limitBarFill" style="width:0%"></div>
+      </div>
+      <button class="btn btn-sm btn-purple" style="flex:0 0 auto;" onclick="showModal('paymentModal')">Upgrade ⭐</button>
+    </div>
+
+    <div class="login-card" id="loginCard">
+      <div class="user-row" id="userRow">
+        <div class="avatar" id="userAvatar">👤</div>
+        <div style="flex:1">
+          <div class="user-name" id="userName">Guest</div>
+          <div class="user-meta" id="userMeta">Not logged in</div>
+        </div>
+        <div id="loginBtns">
+          <button class="btn btn-sm" id="showLoginBtn">Login / Register</button>
+        </div>
+      </div>
+      <div id="loggedInActions" style="display:none;">
+        <div class="btn-row">
+          <button class="btn btn-sm btn-outline" id="historyBtn">🕒 History</button>
+          <button class="btn btn-sm btn-outline" id="badgesBtn">🏆 Badges</button>
+          <button class="btn btn-sm btn-outline" id="profileBtn">👤 Profile</button>
+          <button class="btn btn-sm btn-outline" id="syncBtn">🔄 Sync</button>
+          <button class="btn btn-sm btn-outline" id="logoutBtn">Logout</button>
+        </div>
+        <div class="btn-row" style="margin-top:5px;">
+          <button class="btn btn-sm btn-purple" id="upgradeBtn">⭐ Upgrade Premium</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-num" id="statStreak">0</div>
+        <div class="stat-lbl">Streak 🔥</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="statWords">0</div>
+        <div class="stat-lbl">Words</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="statTrans">0</div>
+        <div class="stat-lbl">Translations</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="translate">Translate</button>
+      <button class="tab" data-tab="quiz">Quiz</button>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div class="admin-panel" id="adminPanel">
+      <div class="admin-title">👑 Owner Dashboard <span class="badge-owner">ADMIN</span></div>
+
+      <div class="admin-sec">
+        <div class="admin-sec-title" style="color:var(--gold);">🔔 Notifications</div>
+        <div id="adminNotifications" class="scroll-box" style="max-height:120px;font-size:.68rem;"></div>
+        <div class="btn-row">
+          <button class="btn btn-outline btn-sm" id="clearNotifBtn">Clear Notifications</button>
+        </div>
+      </div>
+
+      <div class="admin-sec">
+        <div class="admin-sec-title">📊 Analytics</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;font-size:.68rem;">
+          <div>Words: <strong id="anaWords">0</strong></div>
+          <div>Users: <strong id="anaUsers">0</strong></div>
+          <div>Premium: <strong id="anaPrem">0</strong></div>
+          <div>Active Today: <strong id="anaToday">0</strong></div>
+        </div>
+      </div>
+
+      <div class="admin-sec">
+        <div class="admin-sec-title">➕ Add / Edit Word</div>
+        <input type="hidden" id="aw_id">
+        <label class="field-label">English *</label>
+        <input type="text" id="aw_eng" placeholder="English">
+        <label class="field-label">Anyuak (Optional)</label>
+        <input type="text" id="aw_any" placeholder="Anyuak (leave blank if unknown)">
+        <label class="field-label">Category</label>
+        <select id="aw_cat">
+          <option value="general">General</option>
+          <option value="nature">Nature</option>
+          <option value="family">Family</option>
+          <option value="food">Food</option>
+          <option value="body">Body Parts</option>
+          <option value="animals">Animals</option>
+          <option value="greetings">Greetings</option>
+          <option value="education">Education</option>
+        </select>
+        <label class="field-label">Pronunciation</label>
+        <input type="text" id="aw_pron" placeholder="e.g. YEE-thoh">
+        <label class="field-label">Definition (English)</label>
+        <textarea id="aw_def_eng" rows="2" placeholder="Optional"></textarea>
+        <label class="field-label">Definition (Anyuak)</label>
+        <textarea id="aw_def_any" rows="2" placeholder="Optional"></textarea>
+        <label class="field-label">Example Sentence</label>
+        <textarea id="aw_example" rows="2" placeholder="Optional"></textarea>
+        <label class="field-label">Synonyms (comma-separated)</label>
+        <input type="text" id="aw_synonyms">
+        <label class="field-label">Antonyms (comma-separated)</label>
+        <input type="text" id="aw_antonyms">
+        <label class="field-label">Quiz Explanation</label>
+        <textarea id="aw_explanation" rows="2" placeholder="Shown when user gets quiz wrong"></textarea>
+        <div class="btn-row">
+          <button class="btn" id="saveWordBtn">💾 Save Word</button>
+          <button class="btn btn-outline" id="clearWordFormBtn">Clear</button>
+        </div>
+      </div>
+
+      <!-- ═══ ENHANCED BULK IMPORT ═══ -->
+      <div class="admin-sec">
+        <div class="admin-sec-title">📚 Bulk Import (Full Format)</div>
+
+        <div class="bulk-format-hint">
+          <strong>Format (colon-separated, one word per line):</strong><br>
+          <code>english</code><br><br>
+          <strong>Examples:</strong><br>
+          <code>hello:yitho:greetings:YEE-thoh:A greeting:Salutation:::hi,hey:bye:</code><br>
+          <code>water:pii:nature:PEE:The liquid H2O:Bodily fluid:::liquid:fire:Essential for life</code><br>
+          <code>tree::nature::::::::</code> ← Anyuak blank, will need translation later<br><br>
+          <strong>Rules:</strong> English is required. All other fields optional. Use <code>:</code> as separator. Empty fields = leave blank between colons.
+        </div>
+
+        <!-- Bulk preview area -->
+        <div id="bulkPreviewStats" class="bulk-stats" style="display:none;">
+          <span>✅ Valid: <strong id="bulkValidCount">0</strong></span>
+          <span>⚠️ No Anyuak: <strong id="bulkBlankCount">0</strong></span>
+          <span>❌ Errors: <strong id="bulkErrCount">0</strong></span>
+          <span>⏭️ Duplicates: <strong id="bulkDupCount">0</strong></span>
+        </div>
+        <div id="bulkPreviewBox" class="bulk-preview"></div>
+
+        <textarea id="bulkText" rows="6" placeholder="hello:yitho:greetings:YEE-thoh:A common greeting:::hi:bye:
+water:pii:nature:PEE:Liquid water::::liquid:fire:
+tree::nature::::::::" style="font-family:monospace;font-size:.72rem;"></textarea>
+
+        <div class="btn-row">
+          <button class="btn btn-outline" id="bulkPreviewBtn">👁 Preview</button>
+          <button class="btn" id="bulkImportBtn">⬆️ Import All</button>
+          <button class="btn btn-outline btn-sm" id="bulkClearBtn">✖ Clear</button>
+        </div>
+
+        <div style="margin-top:9px;">
+          <div class="admin-sec-title" style="margin-bottom:5px;">📋 Quick Paste Format (old 4-field)</div>
+          <div class="bulk-format-hint" style="margin-bottom:5px;">
+            <code>english:anyuak:category:pronunciation</code> — simple 4-field still supported
+          </div>
+        </div>
+      </div>
+
+      <!-- Export -->
+      <div class="admin-sec">
+        <div class="admin-sec-title">📤 Export Dictionary</div>
+        <p style="font-size:.62rem;color:var(--text2);margin-bottom:7px;">Download all words as a text file for backup or sharing.</p>
+        <div class="export-row">
+          <button class="btn btn-outline btn-sm" id="exportTxtBtn">📄 Export .txt</button>
+          <button class="btn btn-outline btn-sm" id="exportJsonBtn">📦 Export .json</button>
+          <button class="btn btn-outline btn-sm" id="exportCsvBtn">📊 Export .csv</button>
+        </div>
+      </div>
+
+      <div class="admin-sec">
+        <div class="admin-sec-title">⏳ Pending Suggestions (<span id="pendingCount">0</span>)</div>
+        <div id="pendingList" class="scroll-box"></div>
+      </div>
+
+      <div class="admin-sec">
+        <div class="admin-sec-title">🔥 Most Searched Words</div>
+        <div id="trendsList" class="scroll-box" style="max-height:150px;"></div>
+        <div class="btn-row">
+          <button class="btn btn-outline btn-sm" id="refreshTrendsBtn">🔄 Refresh</button>
+          <button class="btn btn-danger btn-sm" id="clearTrendsBtn">🗑 Clear Trends</button>
+        </div>
+      </div>
+
+      <div class="admin-sec">
+        <div class="admin-sec-title">👥 All Users (<span id="adminUserCount">0</span>)</div>
+        <p style="font-size:.58rem;color:var(--text2);margin-bottom:5px;">📋 Tap an email/phone to fill the Unlock box below.</p>
+        <div id="adminUserList" class="scroll-box"></div>
+        <div class="btn-row" style="margin-top:5px;">
+          <button class="btn btn-outline btn-sm" id="refreshUsersBtn">🔄 Refresh Users</button>
+        </div>
+      </div>
+
+      <div class="admin-sec">
+        <div class="admin-sec-title" style="color:var(--red);">🔒 Expired Users (<span id="expiredCount">0</span>)</div>
+        <div id="expiredList" class="scroll-box"></div>
+      </div>
+
+      <div class="admin-sec">
+        <div class="admin-sec-title">🔓 Unlock Premium</div>
+        <input type="text" id="unlockId" placeholder="Enter email or phone from list above">
+        <select id="unlockPlan">
+          <option value="monthly">1 Month (100 ETB)</option>
+          <option value="2months">2 Months (180 ETB)</option>
+          <option value="3months">3 Months (250 ETB)</option>
+          <option value="yearly">Yearly (300 ETB)</option>
+          <option value="reward2weeks">Reward: 2 Weeks Free</option>
+        </select>
+        <div class="btn-row">
+          <button class="btn" id="unlockBtn">🔓 Unlock User</button>
+          <button class="btn btn-outline" id="refreshPremiumBtn">🔄 Sync</button>
+        </div>
+      </div>
+
+      <div class="admin-sec">
+        <div class="admin-sec-title">🎁 Grace Period (+1 Week)</div>
+        <input type="text" id="graceId" placeholder="Email or phone">
+        <div class="btn-row">
+          <button class="btn btn-gold" id="graceBtn">🎁 Give 1 Week</button>
+        </div>
+      </div>
+
+      <div class="admin-sec">
+        <div class="admin-sec-title">🧪 Test Expiry (5 min)</div>
+        <input type="text" id="testExpId" placeholder="Email or phone to test">
+        <div class="btn-row">
+          <button class="btn" style="background:#e67e22;" id="testExpBtn">⏱ Set 5-min Expiry</button>
+        </div>
+      </div>
+
+      <div class="admin-sec">
+        <div class="admin-sec-title">🔐 Change Admin Password</div>
+        <input type="password" id="newPwd" placeholder="New password (min 4 chars)">
+        <div class="btn-row">
+          <button class="btn btn-outline" id="changePwdBtn">Update</button>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-danger" id="forceSaveBtn">💾 FORCE SAVE TO CLOUD</button>
+      </div>
+
+      <div class="admin-sec">
+        <div class="admin-sec-title">🧪 Badge Test</div>
+        <div class="btn-row">
+          <button class="btn btn-gold btn-sm" id="testBadgeBtn">Achieve All Badges (Test)</button>
+        </div>
+      </div>
+
+      <div class="btn-row" style="margin-top:5px;">
+        <button class="btn btn-outline" id="exitAdminBtn">← Exit Admin Mode</button>
+      </div>
+    </div>
+
+    <!-- TRANSLATE PANEL -->
+    <div id="translatePanel">
+
+      <div id="recentSection">
+        <div class="recent-header">
+          <div class="card-title" style="margin-bottom:0;font-size:.52rem;">🕒 Recently Viewed</div>
+          <button class="btn btn-sm btn-outline" id="clearRecentBtn" style="font-size:.55rem;padding:3px 8px;">✖ Clear</button>
+        </div>
+        <div id="recentList"></div>
+      </div>
+
+      <div class="clear-trans-bar" id="transCountBar" style="display:none;">
+        <span>📊 Translations: <strong id="transCountDisplay">0</strong></span>
+        <button class="btn btn-sm btn-danger" id="clearTransCountBtn" style="font-size:.58rem;">🔄 Reset to 0</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Translate</div>
+        <div class="input-wrap">
+          <textarea id="inputText" rows="2" placeholder="Type English or Anyuak..."></textarea>
+          <div id="suggestions" class="suggestions"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn" id="translateBtn">Translate</button>
+          <button class="btn btn-outline" id="swapBtn">⇄ Swap</button>
+          <button class="btn btn-outline" id="randomBtn" title="Random Word">🎲</button>
+          <button class="btn btn-outline" id="clearBtn">✖ Clear</button>
+        </div>
+        <div class="result-box">
+          <div style="display:flex;align-items:center;justify-content:center;">
+            <div id="resultText" class="result-text">—</div>
+            <button class="speak-btn" id="speakBtn" style="display:none;" title="Speak">🔊</button>
+          </div>
+          <div id="resultPron" class="result-pron"></div>
+          <div id="resultExtras" class="result-extras"></div>
+          <div class="share-row" id="shareRow" style="display:none;">
+            <button class="share-btn share-wa" id="shareWaBtn">💬 WhatsApp</button>
+            <button class="share-btn share-copy" id="shareCopyBtn">📋 Copy</button>
+          </div>
+          <button class="btn btn-outline btn-sm" id="suggestTriggerBtn" style="display:none;margin-top:7px;width:100%;">📝 Suggest this word</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ PANEL -->
+    <div class="quiz-panel" id="quizPanel">
+      <div class="quiz-controls">
+        <select id="quizCat" style="flex:2;">
+          <option value="all">All Categories</option>
+          <option value="general">General</option>
+          <option value="nature">Nature</option>
+          <option value="family">Family</option>
+          <option value="food">Food</option>
+          <option value="body">Body Parts</option>
+          <option value="animals">Animals</option>
+          <option value="greetings">Greetings</option>
+          <option value="education">Education</option>
+        </select>
+        <button class="btn btn-outline btn-sm" id="quizModeBtn" style="flex:1;">Eng → Any</button>
+      </div>
+      <div class="quiz-q" id="quizQ">Press Start to begin!</div>
+      <div class="quiz-opts" id="quizOpts"></div>
+      <div id="quizMsg" class="quiz-result-msg"></div>
+      <div class="quiz-score" id="quizScore"></div>
+      <button class="btn quiz-next" id="quizNextBtn">Start Quiz</button>
+    </div>
+
+    <div class="stats-bottom">
+      <span>📘 <span id="wordCount">0</span> words</span>
+      <span>⭐ <span id="favCount">0</span> favorites</span>
+    </div>
+
+    <div class="dict-header">
+      <span class="card-title" style="margin:0;">📖 Dictionary</span>
+      <button class="btn btn-outline btn-sm" id="dictToggleBtn">Show</button>
+    </div>
+    <div class="search-row" id="searchRow" style="display:none;">
+      <select id="dictCat" style="flex:1;margin-bottom:0;padding:7px 9px;font-size:.68rem;">
+        <option value="all">All Categories</option>
+        <option value="general">General</option>
+        <option value="nature">Nature</option>
+        <option value="family">Family</option>
+        <option value="food">Food</option>
+        <option value="body">Body Parts</option>
+        <option value="animals">Animals</option>
+        <option value="greetings">Greetings</option>
+        <option value="education">Education</option>
+        <option value="untranslated">🆕 Needs Translation</option>
+        <option value="favorites">⭐ Favorites</option>
+      </select>
+      <input type="text" id="searchInput" placeholder="Search words..." style="margin-bottom:0;flex:2;">
+      <button class="btn btn-outline btn-sm" id="clearSearchBtn" style="flex:0 0 auto;">✖</button>
+    </div>
+    <div class="word-list" id="wordList"></div>
+
+  </div>
+
+  <div class="footer">
+    <div class="footer-text" id="adminTrigger">📖 Anyuak Translator · Dha_anywaa · meet your Needs</div>
+    <div class="copyright">© 2025-2026 Anyuak Language Project | Created by Jwoto Jay</div>
+  </div>
+</div>
+
+<!-- ═══ MODALS ═══ -->
+<div class="overlay" id="adminAuthModal" style="display:none;">
+  <div class="modal">
+    <h3>🔐 Admin Access</h3>
+    <p style="font-size:.72rem;color:var(--text2);margin-bottom:11px;">Enter Admin Password</p>
+    <input type="password" id="adminAuthPwd" placeholder="Password">
+    <div class="btn-row">
+      <button class="btn" id="doAdminAuthBtn">Unlock</button>
+      <button class="btn btn-outline" onclick="hideModal('adminAuthModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="loginModal" style="display:none;">
+  <div class="modal">
+    <h3>📖 Anyuak Translator</h3>
+    <p style="font-size:.72rem;color:var(--text2);margin-bottom:11px;">Login or Register with Email or Phone Number</p>
+    <input type="text" id="loginInput" placeholder="Email or Phone Number">
+    <div class="btn-row">
+      <button class="btn" id="doLoginModalBtn">🔐 Login</button>
+      <button class="btn btn-outline" id="doRegisterModalBtn">📝 Register</button>
+    </div>
+    <button class="btn btn-outline btn-sm" id="closeLoginBtn" style="margin-top:13px;width:100%;">Close</button>
+  </div>
+</div>
+
+<div class="overlay" id="paymentModal" style="display:none;">
+  <div class="modal">
+    <h3>⭐ Upgrade to Premium</h3>
+    <p style="font-size:.7rem;color:var(--text2);margin-bottom:9px;">Unlock unlimited words and support the project.</p>
+    <div style="background:var(--green-light);padding:11px;border-radius:20px;margin:9px 0;text-align:left;font-size:.7rem;">
+      <p><strong>Monthly:</strong> 100 ETB</p>
+      <p><strong>2 Months:</strong> 180 ETB</p>
+      <p><strong>3 Months:</strong> 250 ETB</p>
+      <p><strong>Yearly:</strong> 300 ETB</p>
+      <hr style="margin:7px 0;border-color:var(--border);">
+      <p><strong>📱 Telebirr:</strong> 0938796126</p>
+      <p><strong>🏦 CBE Bank:</strong> 1000341011403</p>
+      <p><strong>Name:</strong> Jwoto Jay</p>
+    </div>
+    <p style="font-size:.68rem;color:var(--text2);margin-bottom:11px;">After payment, send your receipt to WhatsApp 0938796126 and the admin will unlock your account.</p>
+    <button class="btn btn-outline btn-sm" id="closePayBtn" style="width:100%;">Close</button>
+  </div>
+</div>
+
+<div class="overlay" id="historyModal" style="display:none;">
+  <div class="modal">
+    <h3>🕒 Translation History</h3>
+    <div id="historyList" style="text-align:left;max-height:230px;overflow-y:auto;font-size:.75rem;margin-bottom:9px;">
+      <p style="text-align:center;color:var(--text3);">No history yet.</p>
+    </div>
+    <button class="btn btn-danger btn-sm" id="clearHistoryBtn" style="width:100%;margin-bottom:7px;">🗑 Clear History</button>
+    <button class="btn btn-outline btn-sm" id="closeHistoryBtn" style="width:100%;">Close</button>
+  </div>
+</div>
+
+<div class="overlay" id="badgesModal" style="display:none;">
+  <div class="modal">
+    <h3>🏆 Your Achievements</h3>
+    <p style="font-size:.62rem;color:var(--text2);margin-bottom:9px;">Earn badges by translating and learning!</p>
+    <div id="badgesGrid" style="display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:11px;"></div>
+    <button class="btn btn-outline btn-sm" id="closeBadgesBtn" style="width:100%;">Close</button>
+  </div>
+</div>
+
+<div class="overlay" id="registrationSuccessModal" style="display:none;">
+  <div class="modal">
+    <h3>🎊 Welcome!</h3>
+    <p style="font-size:.82rem;color:var(--text2);margin-bottom:13px;">Your registration was successful!</p>
+    <div style="background:var(--green-light);padding:13px;border-radius:20px;margin-bottom:13px;">
+      <p style="font-size:.72rem;">You can now translate up to 10 words for free. Enjoy learning Anyuak!</p>
+    </div>
+    <button class="btn" onclick="hideModal('registrationSuccessModal')">Start Learning</button>
+  </div>
+</div>
+
+<div class="overlay" id="rewardModal" style="display:none;">
+  <div class="modal">
+    <h3>🏆 Achievement Unlocked!</h3>
+    <p style="font-size:.82rem;color:var(--text2);margin-bottom:13px;">Congratulations! You've earned all badges!</p>
+    <div style="background:var(--gold);color:#1a2e24;padding:13px;border-radius:20px;margin-bottom:13px;font-weight:700;">
+      <p style="font-size:.78rem;">You've been granted 2 minutes of Premium access as a reward!</p>
+    </div>
+    <button class="btn btn-gold" onclick="hideModal('rewardModal')">Awesome!</button>
+  </div>
+</div>
+
+<div class="overlay" id="wordDetailsModal" style="display:none;">
+  <div class="modal">
+    <h3 id="wd_title">Word Details</h3>
+    <div id="wd_content" style="text-align:left;margin-bottom:13px;font-size:.82rem;"></div>
+    <button class="btn btn-outline btn-sm" onclick="hideModal('wordDetailsModal')" style="width:100%;">Close</button>
+  </div>
+</div>
+
+<div class="overlay" id="profileModal" style="display:none;">
+  <div class="modal">
+    <h3>👤 Your Profile</h3>
+    <p style="font-size:.68rem;color:var(--text2);margin-bottom:11px;">Update your profile information</p>
+    <div style="margin-bottom:13px;position:relative;display:inline-block;">
+      <div id="profilePicDisplay" style="width:76px;height:76px;background:var(--green);border-radius:50%;margin:0 auto 9px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:2.3rem;overflow:hidden;">👤</div>
+      <div id="profileEmojiDisplay" style="position:absolute;bottom:9px;right:0;font-size:1.4rem;background:var(--surface);border-radius:50%;padding:2px;"></div>
+    </div>
+    <label class="field-label">Display Name</label>
+    <input type="text" id="profName" placeholder="Your Name">
+    <label class="field-label">Favorite Emoji</label>
+    <input type="text" id="profEmoji" placeholder="e.g. 🦁, 📚, ✨">
+    <label class="field-label">Profile Picture</label>
+    <div style="display:flex;gap:4px;">
+      <input type="text" id="profPic" placeholder="URL" style="flex:1;">
+      <button class="btn btn-sm btn-outline" onclick="document.getElementById('profPicFile').click()">📂</button>
+      <input type="file" id="profPicFile" accept="image/*" style="display:none;">
+    </div>
+    <label class="field-label">About You</label>
+    <textarea id="profBio" rows="2" placeholder="Tell us about yourself..."></textarea>
+    <div class="btn-row">
+      <button class="btn" id="saveProfileBtn">💾 Save Changes</button>
+    </div>
+    <div class="btn-row" style="margin-top:5px;">
+      <button class="btn btn-outline" id="resetStreakBtn">🔥 Reset Streak</button>
+      <button class="btn btn-danger" id="clearHistoryProfileBtn">🗑 Clear History</button>
+    </div>
+    <button class="btn btn-outline btn-sm" id="closeProfileBtn" style="margin-top:13px;width:100%;">Close</button>
+  </div>
+</div>
+
+<!-- Calculator Vault Modal -->
+<div class="overlay" id="calcVaultModal" style="display:none;">
+  <div class="modal calc-vault-modal" style="max-width:440px; text-align:left; position:relative;">
+    <button type="button" class="calc-close-btn" id="closeCalcVaultBtn" style="position:absolute; top:10px; right:12px; background:none; border:none; color:var(--text); font-size:1.2rem; cursor:pointer;">✖</button>
+
+    <!-- Calculator Container -->
+    <div id="calculator-container" class="text-center">
+      <h3 style="font-family:var(--font-display); text-align:center; margin-bottom:12px; color:var(--green);">🧮 Calculator</h3>
+      <input id="display" class="form-control text-end mb-3 calc-display" readonly placeholder="0">
+
+      <div class="row g-2 calc-keypad">
+        <button class="btn btn-dark col-3 py-3 calc-btn" onclick="press('1')">1</button>
+        <button class="btn btn-dark col-3 py-3 calc-btn" onclick="press('2')">2</button>
+        <button class="btn btn-dark col-3 py-3 calc-btn" onclick="press('3')">3</button>
+        <button class="btn btn-danger col-3 py-3 calc-btn calc-btn-danger" onclick="clearDisplay()">C</button>
+
+        <button class="btn btn-dark col-3 py-3 calc-btn" onclick="press('4')">4</button>
+        <button class="btn btn-dark col-3 py-3 calc-btn" onclick="press('5')">5</button>
+        <button class="btn btn-dark col-3 py-3 calc-btn" onclick="press('6')">6</button>
+        <button class="btn btn-warning col-3 py-3 calc-btn calc-btn-warning" onclick="check()">=</button>
+
+        <button class="btn btn-dark col-3 py-3 calc-btn" onclick="press('7')">7</button>
+        <button class="btn btn-dark col-3 py-3 calc-btn" onclick="press('8')">8</button>
+        <button class="btn btn-dark col-3 py-3 calc-btn" onclick="press('9')">9</button>
+        <button class="btn btn-dark col-3 py-3 calc-btn" onclick="press('0')">0</button>
+      </div>
+      <div id="calcErrorMsg" style="color:var(--red); font-size:.75rem; margin-top:8px; display:none; text-align:center;">❌ Wrong Password</div>
+    </div>
+
+    <!-- Secure Vault Container -->
+    <div id="vault-container" style="display: none;">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 style="font-family:var(--font-display); font-size:1.1rem; margin:0; color:var(--green);">🔐 Secure Vault</h3>
+        <button class="btn btn-outline-danger btn-sm" onclick="hideVault()">Logout</button>
+      </div>
+
+      <ul class="nav nav-tabs mb-3" id="vaultTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="images-tab" data-bs-toggle="tab" data-bs-target="#images" type="button" role="tab">Images</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="music-tab" data-bs-toggle="tab" data-bs-target="#music" type="button" role="tab">Music</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="videos-tab" data-bs-toggle="tab" data-bs-target="#videos" type="button" role="tab">Videos</button>
+        </li>
+      </ul>
+
+      <div class="mb-3">
+        <label for="fileInput" class="form-label" style="font-size:.75rem; font-weight:600;">Upload Media</label>
+        <input class="form-control form-control-sm" type="file" id="fileInput" multiple onchange="handleUpload(this)">
+      </div>
+
+      <div class="tab-content" id="vaultTabContent">
+        <div class="tab-pane fade show active" id="images" role="tabpanel">
+          <div class="row g-2" id="images-gallery"></div>
+        </div>
+        <div class="tab-pane fade" id="music" role="tabpanel" style="display:none;">
+          <div class="list-group" id="music-gallery"></div>
+        </div>
+        <div class="tab-pane fade" id="videos" role="tabpanel" style="display:none;">
+          <div class="row g-2" id="videos-gallery"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fake Vault Container -->
+    <div id="fake-vault" class="text-center" style="display: none;">
+      <h3 style="font-family:var(--font-display); color:var(--green);">📂 Fake Vault</h3>
+      <p class="text-muted" style="font-size:.8rem; margin:15px 0;">No sensitive files found.</p>
+      <button class="btn btn-outline-secondary btn-sm" onclick="hideVault()">Back</button>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc,
+  setDoc, doc, query, orderBy, where, onSnapshot, serverTimestamp,
+  enableIndexedDbPersistence
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCfa5IBpeYZmnIE8mct9MTBZT4jXJOGxq0",
+  authDomain: "anyuak-dictionary.firebaseapp.com",
+  projectId: "anyuak-dictionary",
+  storageBucket: "anyuak-dictionary.firebasestorage.app",
+  messagingSenderId: "731426230474",
+  appId: "1:731426230474:web:ae9b3230ab5352e0806433"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+enableIndexedDbPersistence(db).catch((err) => {
+  if (err.code === 'failed-precondition') console.warn("Multiple tabs: persistence limited.");
+  else if (err.code === 'unimplemented') console.warn("Browser doesn't support persistence.");
+});
+
+const wordsRef = collection(db, "dictionary");
+const usersRef = collection(db, "users");
+const notifRef = collection(db, "notifications");
+
+// ══════════════════════════════════════════════
+//  VPN DETECTION
+// ══════════════════════════════════════════════
+async function detectVPN() {
+  try {
+    const publicIPRes = await fetch("https://api.ipify.org?format=json", { signal: AbortSignal.timeout(4000) });
+    if (!publicIPRes.ok) { showVPNBanner(); return; }
+    const { ip } = await publicIPRes.json();
+    try {
+      const vpnCheck = await fetch(`https://ipapi.co/${ip}/json/`, { signal: AbortSignal.timeout(4000) });
+      if (vpnCheck.ok) {
+        const data = await vpnCheck.json();
+        const org = (data.org || "").toLowerCase();
+        const vpnKeywords = ["vpn","mullvad","nordvpn","expressvpn","protonvpn","surfshark","cyberghost","tunnelbear","hotspot shield","private internet","purevpn","hide.me","ivpn","windscribe","pia ","airvpn","torguard","astrill","perfect privacy","ipvanish"];
+        if (vpnKeywords.some(k => org.includes(k))) { showVPNBanner(); return; }
+      }
+    } catch(e) { /* secondary check failed — don't block */ }
+  } catch(e) {
+    console.warn("VPN check failed:", e.message);
+  }
+}
+
+function showVPNBanner() {
+  const b = document.getElementById("vpnBanner");
+  if (b) { b.style.display = "block"; updateConnStatus("VPN detected — please disable", "error"); }
+}
+
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+let state = {
+  dict: [],
+  users: [],
+  recent: JSON.parse(localStorage.getItem("anyuak_recent") || "[]"),
+  pending: [],
+  trends: {},
+  isAdmin: false,
+  currentLang: localStorage.getItem("anyuak_lang") || "en",
+  currentTheme: localStorage.getItem("anyuak_theme") || "light"
+};
+let currentUser = null;
+
+const FREE_LIMIT = 10;
+
+function getViewedWordsKey() {
+  return currentUser ? "anyuak_viewed_" + currentUser.identifier : "anyuak_viewed_guest";
+}
+function getViewedWords() {
+  try { const raw = localStorage.getItem(getViewedWordsKey()); return raw ? JSON.parse(raw) : []; } catch(e) { return []; }
+}
+function saveViewedWords(arr) {
+  try { localStorage.setItem(getViewedWordsKey(), JSON.stringify(arr)); } catch(e) {}
+}
+function hasViewedWord(wordEng) { return getViewedWords().includes((wordEng || "").toLowerCase()); }
+function addViewedWord(wordEng) {
+  const arr = getViewedWords(); const key = (wordEng || "").toLowerCase();
+  if (!arr.includes(key)) { arr.push(key); saveViewedWords(arr); }
+}
+function getViewedCount() { return getViewedWords().length; }
+
+function updateFreeLimitBar() {
+  const bar = document.getElementById("freeLimitBar");
+  const fill = document.getElementById("limitBarFill");
+  const txt = document.getElementById("limitCountText");
+  if (state.isAdmin || isPremiumUser()) { bar.style.display = "none"; return; }
+  if (!currentUser) {
+    bar.style.display = "flex";
+    const gv = getViewedCount(), gl = 3;
+    txt.textContent = gv + " / " + gl + " (guest)";
+    const pct = Math.min(100, (gv / gl) * 100);
+    fill.style.width = pct + "%";
+    fill.className = "limit-bar-fill" + (pct >= 100 ? " danger" : "");
+    return;
+  }
+  bar.style.display = "flex";
+  const viewed = getViewedCount();
+  txt.textContent = viewed + " / " + FREE_LIMIT;
+  const pct = Math.min(100, (viewed / FREE_LIMIT) * 100);
+  fill.style.width = pct + "%";
+  fill.className = "limit-bar-fill" + (pct >= 100 ? " danger" : "");
+}
+
+// ══════════════════════════════════════════════
+//  THEME SYSTEM
+// ══════════════════════════════════════════════
+function applyTheme(theme) {
+  document.body.classList.remove("theme-dark", "theme-warm");
+  if (theme === "dark") document.body.classList.add("theme-dark");
+  else if (theme === "warm") document.body.classList.add("theme-warm");
+  state.currentTheme = theme;
+  localStorage.setItem("anyuak_theme", theme);
+  document.querySelectorAll(".theme-dot").forEach(d => {
+    d.classList.toggle("active", d.dataset.theme === theme);
+  });
+}
+
+// ══════════════════════════════════════════════
+//  UI STRINGS
+// ══════════════════════════════════════════════
+const UI_STRINGS = {
+  en: {
+    appName: "Anyuak <em>Translator</em>",
+    wordOfDay: "Word of the Day",
+    streak: "Streak 🔥",
+    words: "Words",
+    translations: "Translations",
+    translateTab: "Translate",
+    quizTab: "Quiz",
+    loginRegister: "Login / Register",
+    history: "🕒 History",
+    badges: "🏆 Badges",
+    profile: "👤 Profile",
+    sync: "🔄 Sync",
+    logout: "Logout",
+    upgrade: "⭐ Upgrade Premium",
+    inputPlaceholder: "Type English or Anyuak...",
+    translateBtn: "Translate",
+    swapBtn: "⇄ Swap",
+    clearBtn: "Clear",
+    suggestWord: "📝 Suggest this word",
+    dictionary: "📖 Dictionary",
+    show: "Show",
+    hide: "Hide",
+    searchPlaceholder: "Search words...",
+    startQuiz: "Start Quiz",
+    next: "Next →",
+    premiumLimit: "🔒 Free limit reached.",
+    notFound: "✖ Not found.",
+    saveWord: "💾 Save Word",
+    clear: "Clear",
+    badgeNames: ["Beginner","Scholar","Expert","Master","3-Day Streak","7-Day Streak","30-Day Streak","Quiz Starter","Quiz Pro","Quiz Master"],
+    noHistory: "No history yet.",
+    clearHistory: "🗑 Clear History",
+    close: "Close",
+    recent: "Recently Viewed"
+  },
+  any: {
+    appName: "Dha-anywaa <em></em>",
+    wordOfDay: "dööttï mo ii cäng",
+    streak: "nïnë moa näk rii ii kønynyø ki app",
+    words: "döötï moa nut bëët ii app man.",
+    translations: "dööttï moa näk ii løø",
+    translateTab: "kar løk",
+    quizTab: "kar päärö",
+    loginRegister: "jäppï ka account",
+    history: "🕒 döötï moi moa näk ii løø",
+    badges: "🏆 Achivement",
+    profile: "👤 kari",
+    sync: "🔄 sync",
+    logout: "dwøga account wøk",
+    upgrade: "⭐ cudï kiper nee jäppë",
+    inputPlaceholder: "göör dwøl mar dhinyigilic wala dhaanywaa...",
+    translateBtn: "løgi",
+    swapBtn: "⇄ wili",
+    clearBtn: "räänynyi",
+    suggestWord: "📝 cïppï ka acaara",
+    dictionary: "📖 wëël dööttï",
+    show: "nyuuth kar dööttï",
+    hide: "kan kar dööttï",
+    searchPlaceholder: "many dwøl ki kany...",
+    startQuiz: "cak päärö",
+    next: "pïëc maya →",
+    premiumLimit: "🔒 Kun cwal (Wuoŋi 10). Malo me yaŋi.",
+    notFound: "✖ dwøl man tøørø.",
+    saveWord: "💾 save",
+    clear: "raanynyi",
+    badgeNames: ["noo løgi dwøl 1+","noo løgi Dööttï 50+","noo løgi dööttï mo 200+","noo løgi Dööttï mo 500+","noo tumë ni Nïnë 3","noo tumë ni Nïnë 7","noo tumë ni Nïnë mo 30","noo kädï ki päärö","noo gïttï ka abära","noo gïttï ka apaar ki ra apaar"],
+    noHistory: "döötï  moa näk ii løø .",
+    clearHistory: "🗑 räänynyi döötï",
+    close: "dwøk wøk",
+    recent: "döötï moi moa näk ii løø"
+  }
+};
+
+let userStats = { totalTrans: 0, quizHigh: 0, streakDays: 0, lastActive: null, history: [] };
+let searchTerm = "";
+let currentCat = "all";
+let quizMode = "eng-any";
+let quizCategory = "all";
+let quizQuestions = [], quizIndex = 0, quizScore = 0, quizAnswered = false;
+let lastTranslation = null;
+let lastMissing = "";
+let dictVisible = false;
+let ADMIN_PWD = localStorage.getItem("anyuak_admin_pwd") || "anyuak123";
+
+const CAT_LABELS = {
+  all:"All", general:"General", nature:"Nature", family:"Family", food:"Food",
+  body:"Body Parts", animals:"Animals", greetings:"Greetings", education:"Education",
+  favorites:"⭐ Favorites", untranslated:"🆕 Needs Translation"
+};
+
+// ══════════════════════════════════════════════
+//  BUG FIX #1: escapeHtml — entity map was broken (missing & amp ; etc.)
+// ══════════════════════════════════════════════
+function escapeHtml(s) {
+  if (s === null || s === undefined) return "";
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function cleanStr(s) {
+  if (!s) return "";
+  return String(s).toLowerCase().trim().replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ");
+}
+
+function showToast(msg) {
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3400);
+}
+
+function updateConnStatus(msg, type = "ok") {
+  const dot = document.getElementById("statusDot");
+  const txt = document.getElementById("statusText");
+  if (dot) dot.className = "status-dot" + (type === "saving" ? " saving" : type === "error" ? " error" : "");
+  if (txt) txt.textContent = msg;
+}
+
+function sortDict() { state.dict.sort((a, b) => (a.eng || "").localeCompare(b.eng || "")); }
+
+function updateRecent(w) {
+  state.recent = [w.eng, ...state.recent.filter(x => x !== w.eng)].slice(0, 8);
+  localStorage.setItem("anyuak_recent", JSON.stringify(state.recent));
+  renderRecent();
+}
+
+function renderRecent() {
+  const list = document.getElementById("recentList");
+  const sec = document.getElementById("recentSection");
+  if (!state.recent.length) { sec.style.display = "none"; return; }
+  sec.style.display = "block";
+  list.innerHTML = state.recent.map(eng =>
+    `<button class="btn btn-sm btn-outline" style="white-space:nowrap;flex:0 0 auto;font-size:.6rem;" data-recent="${escapeHtml(eng)}">${escapeHtml(eng)}</button>`
+  ).join('');
+}
+
+function updateUILanguage() {
+  const lang = state.currentLang;
+  const s = UI_STRINGS[lang];
+  document.getElementById("appName").innerHTML = s.appName;
+  document.querySelector(".wod-label").textContent = s.wordOfDay;
+  const statLabels = document.querySelectorAll(".stat-lbl");
+  statLabels[0].textContent = s.streak;
+  statLabels[1].textContent = s.words;
+  statLabels[2].textContent = s.translations;
+  const tabs = document.querySelectorAll(".tab");
+  tabs[0].textContent = s.translateTab;
+  tabs[1].textContent = s.quizTab;
+  if (!currentUser) document.getElementById("showLoginBtn").textContent = s.loginRegister;
+  document.getElementById("historyBtn").textContent = s.history;
+  document.getElementById("badgesBtn").textContent = s.badges;
+  document.getElementById("profileBtn").textContent = s.profile;
+  document.getElementById("syncBtn").textContent = s.sync;
+  document.getElementById("logoutBtn").textContent = s.logout;
+  document.getElementById("upgradeBtn").textContent = s.upgrade;
+  document.getElementById("inputText").placeholder = s.inputPlaceholder;
+  document.getElementById("translateBtn").textContent = s.translateBtn;
+  document.getElementById("swapBtn").textContent = s.swapBtn;
+  document.getElementById("clearBtn").textContent = s.clearBtn;
+  document.getElementById("suggestTriggerBtn").textContent = s.suggestWord;
+  document.querySelector(".dict-header .card-title").textContent = s.dictionary;
+  document.getElementById("dictToggleBtn").textContent = dictVisible ? s.hide : s.show;
+  document.getElementById("searchInput").placeholder = s.searchPlaceholder;
+  const qBtn = document.getElementById("quizNextBtn");
+  qBtn.textContent = (!quizQuestions.length || quizIndex >= quizQuestions.length) ? s.startQuiz : s.next;
+  document.getElementById("saveWordBtn").textContent = s.saveWord;
+  document.getElementById("clearWordFormBtn").textContent = s.clear;
+  document.getElementById("langBtn").textContent = lang === "en" ? "Any" : "Eng";
+  document.getElementById("clearHistoryBtn").textContent = s.clearHistory;
+  document.getElementById("closeHistoryBtn").textContent = s.close;
+  document.getElementById("closeBadgesBtn").textContent = s.close;
+  document.getElementById("closeProfileBtn").textContent = s.close;
+}
+
+function toggleLanguage() {
+  state.currentLang = state.currentLang === "en" ? "any" : "en";
+  localStorage.setItem("anyuak_lang", state.currentLang);
+  updateUILanguage();
+  showToast(state.currentLang === "en" ? "Language: English" : "Dha-anywaa");
+}
+
+// ══════════════════════════════════════════════
+//  USER STATS
+// ══════════════════════════════════════════════
+function saveUserStats() {
+  if (!currentUser) return;
+  localStorage.setItem("anyuak_stats_" + currentUser.id, JSON.stringify(userStats));
+}
+function loadUserStats() {
+  if (!currentUser) return;
+  const saved = localStorage.getItem("anyuak_stats_" + currentUser.id);
+  if (saved) { try { userStats = JSON.parse(saved); } catch(e) {} }
+  updateStatsUI();
+}
+function updateStreak() {
+  if (!currentUser) return;
+  const now = new Date();
+  const today = now.toDateString();
+  if (!userStats.lastActive) {
+    userStats.streakDays = 1; userStats.lastActive = today;
+  } else if (userStats.lastActive !== today) {
+    const lastDate = new Date(userStats.lastActive);
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    userStats.streakDays = (lastDate.toDateString() === yesterday.toDateString()) ? userStats.streakDays + 1 : 1;
+    userStats.lastActive = today;
+  }
+  saveUserStats();
+}
+
+// ══════════════════════════════════════════════
+//  FIREBASE REALTIME LISTENERS
+// ══════════════════════════════════════════════
+function startListeners() {
+  const dictQuery = query(wordsRef, orderBy("eng"));
+  onSnapshot(dictQuery, (snapshot) => {
+    state.dict = [];
+    snapshot.forEach(d => state.dict.push({ id: d.id, ...d.data() }));
+    renderDict();
+    updateStatsUI();
+    setWordOfDay();
+    updateConnStatus("Connected · " + state.dict.length + " words");
+    updateFreeLimitBar();
+  }, (err) => {
+    console.error("Dict snapshot error:", err);
+    updateConnStatus("Connection error", "error");
+  });
+
+  onSnapshot(usersRef, (snapshot) => {
+    state.users = [];
+    snapshot.forEach(d => state.users.push({ id: d.id, ...d.data() }));
+    if (currentUser) {
+      const updated = state.users.find(u => u.identifier === currentUser.identifier);
+      if (updated) {
+        currentUser.premium = updated.premium;
+        updateLoginUI();
+        checkPremiumExpiry();
+        updateFreeLimitBar();
+      }
+    }
+    if (state.isAdmin) renderAdminUsers();
+  }, (err) => { console.error("Users snapshot error:", err); });
+}
+
+// ══════════════════════════════════════════════
+//  FIREBASE WORD ACTIONS
+// ══════════════════════════════════════════════
+async function addWordToFirebase(wordObj) {
+  try {
+    updateConnStatus("Saving...", "saving");
+    const newRef = doc(wordsRef);
+    wordObj.id = newRef.id;
+    wordObj.fav = false;
+    wordObj.createdAt = serverTimestamp();
+    await setDoc(newRef, wordObj);
+    showToast("✅ Word added to cloud!");
+    updateConnStatus("Saved");
+    return true;
+  } catch (e) {
+    showToast("❌ Failed to add word: " + e.message);
+    updateConnStatus("Save error", "error");
+    return false;
+  }
+}
+
+async function updateWordInFirebase(id, wordObj) {
+  try {
+    updateConnStatus("Updating...", "saving");
+    await updateDoc(doc(db, "dictionary", id), wordObj);
+    showToast("✅ Word updated!");
+    updateConnStatus("Updated");
+    return true;
+  } catch (e) {
+    showToast("❌ Failed to update: " + e.message);
+    updateConnStatus("Update error", "error");
+  }
+}
+
+async function deleteWordFromFirebase(id) {
+  if (!confirm("Delete this word permanently?")) return;
+  try {
+    await deleteDoc(doc(db, "dictionary", id));
+    showToast("✅ Word deleted!");
+  } catch (e) { showToast("❌ Failed to delete: " + e.message); }
+}
+
+// ══════════════════════════════════════════════
+//  USER SYSTEM
+// ══════════════════════════════════════════════
+async function loginUser(identifier) {
+  identifier = identifier.trim().toLowerCase();
+  if (!identifier) return { ok: false, msg: "Enter an email or phone number." };
+  try {
+    updateConnStatus("Logging in...", "saving");
+    let q = query(usersRef, where("identifier", "==", identifier));
+    let snap = await getDocs(q);
+    if (snap.empty) {
+      q = query(usersRef, where("email", "==", identifier));
+      snap = await getDocs(q);
+      if (snap.empty) {
+        q = query(usersRef, where("phone", "==", identifier));
+        snap = await getDocs(q);
+      }
+    }
+    if (snap.empty) { updateConnStatus("Login failed", "error"); return { ok: false, msg: "User not found. Please register first." }; }
+    const userDoc = snap.docs[0];
+    currentUser = { id: userDoc.id, ...userDoc.data() };
+    const sessionData = JSON.stringify({ userId: currentUser.id, identifier: currentUser.identifier });
+    localStorage.setItem("anyuak_session", sessionData);
+    sessionStorage.setItem("anyuak_session", sessionData);
+    await updateDoc(doc(db, "users", currentUser.id), { lastLogin: serverTimestamp() });
+    loadUserStats();
+    updateStreak();
+    checkPremiumExpiry();
+    updateLoginUI();
+    updateFreeLimitBar();
+    updateConnStatus("Logged in");
+    return { ok: true, msg: "✅ Login successful!" };
+  } catch (e) {
+    console.error("Login Error:", e);
+    updateConnStatus("Login error", "error");
+    return { ok: false, msg: "Login failed: " + e.message };
+  }
+}
+
+async function registerUser(identifier) {
+  identifier = identifier.trim().toLowerCase();
+  if (!identifier) return { ok: false, msg: "Enter an email or phone number." };
+  try {
+    updateConnStatus("Registering...", "saving");
+    const q = query(usersRef, where("identifier", "==", identifier));
+    const snap = await getDocs(q);
+    if (!snap.empty) { updateConnStatus("Registration failed", "error"); return { ok: false, msg: "User already exists. Please login." }; }
+    const isEmail = identifier.includes('@');
+    const newUser = {
+      identifier,
+      email: isEmail ? identifier : null,
+      phone: !isEmail ? identifier : null,
+      premium: { active: false, plan: null, expiryDate: null },
+      createdAt: serverTimestamp(),
+      lastLogin: serverTimestamp()
+    };
+    const newRef = doc(usersRef);
+    await setDoc(newRef, newUser);
+
+    try {
+      await addDoc(notifRef, {
+        userId: newRef.id,
+        identifier: identifier,
+        type: "registration",
+        message: `New user registered: ${identifier}`,
+        createdAt: serverTimestamp()
+      });
+    } catch (err) { console.warn("Failed to send registration notification:", err); }
+
+    currentUser = { id: newRef.id, ...newUser, createdAt: new Date(), lastLogin: new Date() };
+    const sessionData = JSON.stringify({ userId: currentUser.id, identifier: currentUser.identifier });
+    localStorage.setItem("anyuak_session", sessionData);
+    sessionStorage.setItem("anyuak_session", sessionData);
+    loadUserStats();
+    updateLoginUI();
+    updateFreeLimitBar();
+    updateConnStatus("Registered");
+    showModal('registrationSuccessModal');
+    return { ok: true, msg: "✅ Registration successful!" };
+  } catch (e) {
+    console.error("Registration Error:", e);
+    updateConnStatus("Registration error", "error");
+    return { ok: false, msg: "Registration failed: " + e.message };
+  }
+}
+
+async function restoreSession() {
+  const saved = localStorage.getItem("anyuak_session") || sessionStorage.getItem("anyuak_session");
+  if (!saved) return;
+  try {
+    const { identifier } = JSON.parse(saved);
+    if (!identifier) return;
+    const q = query(usersRef, where("identifier", "==", identifier));
+    const snap = await getDocs(q);
+    if (!snap.empty) {
+      const userDoc = snap.docs[0];
+      currentUser = { id: userDoc.id, ...userDoc.data() };
+      const sessionData = JSON.stringify({ userId: currentUser.id, identifier: currentUser.identifier });
+      localStorage.setItem("anyuak_session", sessionData);
+      sessionStorage.setItem("anyuak_session", sessionData);
+      loadUserStats();
+      updateStreak();
+      checkPremiumExpiry();
+      updateLoginUI();
+      updateFreeLimitBar();
+    }
+  } catch (e) {
+    localStorage.removeItem("anyuak_session");
+    sessionStorage.removeItem("anyuak_session");
+  }
+}
+
+function logoutUser() {
+  currentUser = null;
+  userStats = { totalTrans: 0, quizHigh: 0, streakDays: 0, lastActive: null, history: [] };
+  localStorage.removeItem("anyuak_session");
+  sessionStorage.removeItem("anyuak_session");
+  showToast("Logged out");
+  updateLoginUI();
+  renderDict();
+  updateStatsUI();
+  updateFreeLimitBar();
+}
+
+// ══════════════════════════════════════════════
+//  UNLOCK / PREMIUM MANAGEMENT
+// ══════════════════════════════════════════════
+async function unlockUser(identifier, plan) {
+  identifier = identifier.trim().toLowerCase();
+  if (!identifier) return { ok: false, msg: "Enter an email or phone." };
+  try {
+    let snap = await getDocs(query(usersRef, where("identifier", "==", identifier)));
+    if (snap.empty && identifier.includes('@')) snap = await getDocs(query(usersRef, where("email", "==", identifier)));
+    if (snap.empty) snap = await getDocs(query(usersRef, where("phone", "==", identifier)));
+    if (snap.empty) {
+      const allUsers = await getDocs(usersRef);
+      const match = allUsers.docs.find(d => {
+        const u = d.data();
+        return (u.email === identifier || u.phone === identifier ||
+                (u.email && u.email.toLowerCase().includes(identifier)) ||
+                (u.phone && u.phone.toLowerCase().includes(identifier)));
+      });
+      if (!match) return { ok: false, msg: "User not found: " + identifier };
+      snap = { docs: [match] };
+    }
+    const userDoc = snap.docs[0];
+    const userData = userDoc.data();
+    let expiry = new Date();
+    if (plan === "test5min") { expiry = new Date(Date.now() + 5 * 60 * 1000); }
+    else if (plan === "reward2weeks") { expiry.setDate(expiry.getDate() + 14); }
+    else if (plan === "week") { expiry.setDate(expiry.getDate() + 7); }
+    else {
+      const months = { monthly: 1, "2months": 2, "3months": 3, yearly: 12 }[plan] || 1;
+      const existing = userData.premium?.expiryDate ? new Date(userData.premium.expiryDate) : null;
+      if (existing && existing > new Date()) expiry = new Date(existing);
+      expiry.setMonth(expiry.getMonth() + months);
+    }
+    await updateDoc(doc(db, "users", userDoc.id), {
+      premium: { active: true, plan, expiryDate: expiry.toISOString(), unlockedAt: serverTimestamp() }
+    });
+    if (currentUser && (currentUser.identifier === identifier || currentUser.email === identifier || currentUser.phone === identifier)) {
+      currentUser.premium = { active: true, plan, expiryDate: expiry.toISOString() };
+      checkPremiumExpiry();
+      updateLoginUI();
+      updateFreeLimitBar();
+    }
+    const expLabel = plan === "test5min" ? "5 minutes" : `until ${expiry.toLocaleDateString()}`;
+    return { ok: true, msg: `✅ ${identifier} unlocked! Valid ${expLabel}` };
+  } catch (e) { return { ok: false, msg: "Unlock failed: " + e.message }; }
+}
+
+async function autoLockExpiredUsers() {
+  try {
+    const allUsers = await getDocs(usersRef);
+    const now = new Date();
+    for (const userDoc of allUsers.docs) {
+      const userData = userDoc.data();
+      if (userData.premium?.active && userData.premium?.expiryDate) {
+        if (new Date(userData.premium.expiryDate) <= now) {
+          await updateDoc(doc(db, "users", userDoc.id), { "premium.active": false });
+        }
+      }
+    }
+  } catch (e) { console.error("Auto-lock error:", e); }
+}
+setInterval(autoLockExpiredUsers, 60000);
+
+function checkPremiumExpiry() {
+  if (!currentUser || !currentUser.premium) return;
+  const p = currentUser.premium;
+  const warnEl = document.getElementById("expiryWarn");
+  if (!warnEl) return;
+  if (p.active && p.expiryDate) {
+    const expiry = new Date(p.expiryDate);
+    const now = new Date();
+    const diffDays = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
+    if (expiry <= now) {
+      currentUser.premium.active = false;
+      updateDoc(doc(db, "users", currentUser.id), { "premium.active": false });
+      warnEl.style.display = "block";
+      warnEl.innerHTML = "❌ Your Premium has expired. Please upgrade to continue.";
+    } else if (diffDays <= 7) {
+      warnEl.style.display = "block";
+      warnEl.innerHTML = `⚠️ Premium expires in ${diffDays} day${diffDays === 1 ? '' : 's'}. Renew now!`;
+    } else { warnEl.style.display = "none"; }
+  } else { warnEl.style.display = "none"; }
+}
+
+function isPremiumUser() {
+  if (state.isAdmin) return true;
+  if (!currentUser?.premium?.active) return false;
+  if (!currentUser.premium.expiryDate) return true;
+  return new Date(currentUser.premium.expiryDate) > new Date();
+}
+
+// ══════════════════════════════════════════════
+//  PAYWALL
+// ══════════════════════════════════════════════
+function showPaywallInResult(isGuest, used, limit) {
+  const resultText = document.getElementById("resultText");
+  const resultPron = document.getElementById("resultPron");
+  const resultExtras = document.getElementById("resultExtras");
+  const shareRow = document.getElementById("shareRow");
+  const speakBtn = document.getElementById("speakBtn");
+  const suggestBtn = document.getElementById("suggestTriggerBtn");
+  resultText.innerHTML = "🔒";
+  resultExtras.style.display = "none";
+  shareRow.style.display = "none";
+  speakBtn.style.display = "none";
+  suggestBtn.style.display = "none";
+  if (isGuest) {
+    resultPron.innerHTML = `<div class="result-locked-pron"><div class="lock-title">Free preview used (${used}/${limit})</div><div class="lock-sub">Register free to get 10 words, or upgrade for unlimited.</div><button class="btn btn-sm" onclick="showModal('loginModal')" style="margin-right:5px;">📝 Register Free</button><button class="btn btn-sm btn-purple" onclick="showModal('paymentModal')">⭐ Upgrade</button></div>`;
+  } else {
+    resultPron.innerHTML = `<div class="result-locked-pron"><div class="lock-title">You've used all ${limit} free words</div><div class="lock-sub">Upgrade to Premium for unlimited access to all ${state.dict.length} words.</div><button class="btn btn-sm btn-purple" onclick="showModal('paymentModal')">⭐ Upgrade — 100 ETB/month</button><div style="font-size:.62rem;color:var(--text3);margin-top:5px;">Pay via Telebirr 0938796126 · Then contact admin</div></div>`;
+  }
+}
+
+async function checkViewLimit(word) {
+  if (isPremiumUser()) return true;
+  const wordKey = (word.eng || "").toLowerCase();
+  if (hasViewedWord(wordKey)) return true;
+  if (!currentUser) {
+    const guestLimit = 3, guestViewed = getViewedCount();
+    if (guestViewed >= guestLimit) { showPaywallInResult(true, guestViewed, guestLimit); updateFreeLimitBar(); return false; }
+    addViewedWord(wordKey); updateFreeLimitBar(); return true;
+  }
+  const viewed = getViewedCount();
+  if (viewed >= FREE_LIMIT) { showPaywallInResult(false, viewed, FREE_LIMIT); updateFreeLimitBar(); return false; }
+  addViewedWord(wordKey);
+  try { await updateDoc(doc(db, "users", currentUser.id), { freeWordsUsed: getViewedCount() }); } catch(e) {}
+  updateFreeLimitBar();
+  return true;
+}
+
+// ══════════════════════════════════════════════
+//  SPEECH — Mobile-compatible TTS
+// ══════════════════════════════════════════════
+function speakText(text) {
+  if (!text || !window.speechSynthesis) { showToast("Speech not supported"); return; }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = 0.88;
+  u.pitch = 1;
+  u.volume = 1;
+  function doSpeak() {
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length > 0) {
+      const enVoice = voices.find(v => v.lang.startsWith('en') && v.localService);
+      if (enVoice) u.voice = enVoice;
+    }
+    window.speechSynthesis.speak(u);
+  }
+  if (window.speechSynthesis.getVoices().length > 0) {
+    doSpeak();
+  } else {
+    window.speechSynthesis.onvoiceschanged = () => { doSpeak(); window.speechSynthesis.onvoiceschanged = null; };
+    setTimeout(doSpeak, 500);
+  }
+}
+
+// ══════════════════════════════════════════════
+//  TRANSLATION LOGIC
+// ══════════════════════════════════════════════
+async function translate() {
+  const raw = document.getElementById("inputText").value.trim();
+  const inp = cleanStr(raw);
+  const resultText = document.getElementById("resultText");
+  const resultPron = document.getElementById("resultPron");
+  const resultExtras = document.getElementById("resultExtras");
+  const shareRow = document.getElementById("shareRow");
+  const speakBtn = document.getElementById("speakBtn");
+  const suggestBtn = document.getElementById("suggestTriggerBtn");
+
+  if (!inp) {
+    resultText.innerHTML = "—"; resultPron.innerHTML = "";
+    resultExtras.style.display = "none"; shareRow.style.display = "none";
+    speakBtn.style.display = "none"; suggestBtn.style.display = "none";
+    return;
+  }
+
+  const found = state.dict.find(w => {
+    const wEng = cleanStr(w.eng || "");
+    const wAny = cleanStr(w.any || "");
+    return wEng === inp || wAny === inp;
+  });
+
+  if (found) {
+    const allowed = await checkViewLimit(found);
+    if (!allowed) return;
+    const isEngIn = cleanStr(found.eng) === inp;
+    const res = isEngIn ? found.any : found.eng;
+    resultText.innerHTML = res ? escapeHtml(res) : '<span style="color:var(--text3);font-style:italic;">(no Anyuak translation yet)</span>';
+    resultPron.innerHTML = found.pron ? `🔊 ${escapeHtml(found.pron)}` : "";
+    const extras = [];
+    if (found.defEng) extras.push(`<div class="extra-line"><strong>📖 Eng:</strong> ${escapeHtml(found.defEng)}</div>`);
+    if (found.defAny) extras.push(`<div class="extra-line"><strong>📖 Any:</strong> ${escapeHtml(found.defAny)}</div>`);
+    if (found.example) extras.push(`<div class="extra-line"><strong>💬 Example:</strong> ${escapeHtml(found.example)}</div>`);
+    if (found.synonyms) extras.push(`<div class="extra-line"><strong>🔗 Synonyms:</strong> ${escapeHtml(found.synonyms)}</div>`);
+    if (found.antonyms) extras.push(`<div class="extra-line"><strong>↔️ Antonyms:</strong> ${escapeHtml(found.antonyms)}</div>`);
+    resultExtras.innerHTML = extras.join('');
+    resultExtras.style.display = extras.length ? "block" : "none";
+    shareRow.style.display = "flex";
+    speakBtn.style.display = "inline-flex";
+    suggestBtn.style.display = "none";
+    lastTranslation = found;
+    trackTrans(found);
+    trackTrend(found.eng);
+    updateRecent(found);
+  } else {
+    resultText.innerHTML = UI_STRINGS[state.currentLang].notFound + " “" + escapeHtml(raw) + "”";
+    resultPron.innerHTML = `<span style="font-size:.68rem;color:var(--text2);">Try searching a word in the dictionary.</span>`;
+    resultExtras.style.display = "none"; shareRow.style.display = "none";
+    speakBtn.style.display = "none"; suggestBtn.style.display = "block";
+    lastMissing = raw;
+  }
+}
+
+function updateTransCountBar() {
+  const bar = document.getElementById("transCountBar");
+  const display = document.getElementById("transCountDisplay");
+  if (!currentUser) { bar.style.display = "none"; return; }
+  const count = userStats.totalTrans || 0;
+  display.textContent = count;
+  bar.style.display = count >= 200 ? "flex" : "none";
+}
+
+function trackTrans(w) {
+  if (!currentUser) return;
+  userStats.totalTrans++;
+  updateStreak();
+  if (w) userStats.history = [{ eng: w.eng, any: w.any }, ...userStats.history].slice(0, 30);
+  saveUserStats();
+  updateStatsUI();
+}
+
+async function trackTrend(word) {
+  if (!word) return;
+  state.trends[word] = (state.trends[word] || 0) + 1;
+  try { await setDoc(doc(db, "analytics", "trends"), { [word]: state.trends[word] }, { merge: true }); } catch(e) {}
+}
+
+async function loadTrends() {
+  try {
+    const snap = await getDocs(collection(db, "analytics"));
+    snap.forEach(d => { if (d.id === "trends") state.trends = { ...state.trends, ...d.data() }; });
+  } catch(e) {}
+}
+
+// ══════════════════════════════════════════════
+//  UI RENDERING
+// ══════════════════════════════════════════════
+function updateStatsUI() {
+  document.getElementById("statStreak").textContent = userStats.streakDays || 0;
+  document.getElementById("statTrans").textContent = userStats.totalTrans || 0;
+  document.getElementById("statWords").textContent = state.dict.length;
+  updateTransCountBar();
+  checkAllBadgesAndReward();
+}
+
+async function checkAllBadgesAndReward() {
+  if (!currentUser || state.isAdmin) return;
+  const tr = userStats.totalTrans || 0, st = userStats.streakDays || 0, hs = userStats.quizHigh || 0;
+  const badgesEarned = [tr>=1, tr>=50, tr>=200, tr>=500, st>=3, st>=7, st>=30, hs>=50, hs>=80, hs>=100];
+  if (badgesEarned.every(b => b)) {
+    const rewardClaimed = localStorage.getItem("anyuak_reward_" + currentUser.id);
+    if (!rewardClaimed) {
+      localStorage.setItem("anyuak_reward_" + currentUser.id, "1");
+      try {
+        await addDoc(notifRef, {
+          userId: currentUser.id, identifier: currentUser.identifier, type: "all_badges",
+          message: `${currentUser.identifier} has earned all badges!`, createdAt: serverTimestamp()
+        });
+      } catch(e) {}
+      if (!isPremiumUser()) {
+        const expiry = new Date(Date.now() + 2 * 60 * 1000);
+        try {
+          await updateDoc(doc(db, "users", currentUser.id), {
+            premium: { active: true, plan: "reward_trial", expiryDate: expiry.toISOString(), unlockedAt: serverTimestamp() }
+          });
+          currentUser.premium = { active: true, plan: "reward_trial", expiryDate: expiry.toISOString() };
+          updateLoginUI(); updateFreeLimitBar(); showModal('rewardModal');
+        } catch(e) {}
+      } else { showToast("🏆 All badges earned! Admin has been notified."); }
+    }
+  }
+}
+
+function updateLoginUI() {
+  const u = currentUser;
+  const loginBtns = document.getElementById("loginBtns");
+  const loggedInActions = document.getElementById("loggedInActions");
+  const greeting = document.getElementById("userName");
+  const meta = document.getElementById("userMeta");
+  const avatar = document.getElementById("userAvatar");
+  if (u) {
+    loginBtns.style.display = "none";
+    loggedInActions.style.display = "block";
+    if (u.pic) avatar.innerHTML = `<img src="${escapeHtml(u.pic)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+    else if (u.emoji) avatar.innerHTML = u.emoji;
+    else avatar.innerHTML = "👤";
+    const isPrem = isPremiumUser();
+    greeting.innerHTML = `${escapeHtml(u.name || u.identifier)} ${isPrem ? '<span class="badge badge-premium">⭐ Premium</span>' : '<span class="badge badge-free">Free</span>'}`;
+    let metaText = `🔥 ${userStats.streakDays || 0} days streak`;
+    if (u.premium?.expiryDate) metaText += ` · Exp: ${new Date(u.premium.expiryDate).toLocaleDateString()}`;
+    meta.textContent = metaText;
+    document.getElementById("upgradeBtn").style.display = isPrem ? "none" : "block";
+  } else {
+    loginBtns.style.display = "flex";
+    loggedInActions.style.display = "none";
+    greeting.textContent = "👤 Guest";
+    meta.textContent = "Not logged in · 3 free words preview";
+    document.getElementById("expiryWarn").style.display = "none";
+  }
+}
+
+function showWordDetails(id) {
+  const w = state.dict.find(x => x.id === id);
+  if (!w) return;
+  document.getElementById("wd_title").innerHTML = `${escapeHtml(w.eng)} → <span style="color:var(--green);font-style:italic;">${escapeHtml(w.any || '(no translation yet)')}</span>`;
+  let html = "";
+  if (w.pron) html += `<p><strong>🔊 Pronunciation:</strong> ${escapeHtml(w.pron)}</p>`;
+  if (w.defEng) html += `<p style="margin-top:7px;"><strong>📖 Definition (EN):</strong> ${escapeHtml(w.defEng)}</p>`;
+  if (w.defAny) html += `<p><strong>📖 Definition (ANY):</strong> ${escapeHtml(w.defAny)}</p>`;
+  if (w.example) html += `<p style="margin-top:7px;"><strong>💬 Example:</strong> ${escapeHtml(w.example)}</p>`;
+  if (w.synonyms) html += `<p style="margin-top:7px;"><strong>🔗 Synonyms:</strong> ${escapeHtml(w.synonyms)}</p>`;
+  if (w.antonyms) html += `<p><strong>↔️ Antonyms:</strong> ${escapeHtml(w.antonyms)}</p>`;
+  if (w.explanation) html += `<p style="margin-top:7px;color:var(--text2);font-style:italic;">💡 ${escapeHtml(w.explanation)}</p>`;
+  document.getElementById("wd_content").innerHTML = html || "<p>No extra details available.</p>";
+  showModal("wordDetailsModal");
+}
+window.showWordDetails = showWordDetails;
+
+function renderDict() {
+  let pool = [...state.dict];
+  const selectedCat = (document.getElementById("dictCat")?.value || "all").toLowerCase();
+  if (selectedCat === "favorites") pool = pool.filter(w => w.fav);
+  else if (selectedCat === "untranslated") pool = pool.filter(w => !w.any);
+  else if (selectedCat !== "all") pool = pool.filter(w => (w.cat || "general").toLowerCase() === selectedCat);
+  if (searchTerm) {
+    const term = searchTerm.toLowerCase();
+    pool = pool.filter(w => (w.eng || "").toLowerCase().includes(term) || (w.any || "").toLowerCase().includes(term));
+  }
+  pool.sort((a, b) => (a.eng || "").localeCompare(b.eng || ""));
+
+  const isPrem = isPremiumUser();
+  const totalInPool = pool.length;
+  if (!isPrem) pool = pool.slice(0, 10);
+
+  document.getElementById("wordCount").textContent = state.dict.length;
+  document.getElementById("favCount").textContent = state.dict.filter(w => w.fav).length;
+  const container = document.getElementById("wordList");
+
+  if (!pool.length) {
+    container.innerHTML = '<div style="padding:13px;text-align:center;color:var(--text3);">✨ No words found</div>';
+    return;
+  }
+
+  let lastLetter = "";
+  let html = "";
+
+  pool.forEach(w => {
+    const firstLetter = (w.eng || "#")[0].toUpperCase();
+    if (firstLetter !== lastLetter) {
+      html += `<div class="dict-group-header">${firstLetter}</div>`;
+      lastLetter = firstLetter;
+    }
+
+    const adminBtns = state.isAdmin ? `
+      <button class="icon-btn" onclick="event.stopPropagation(); window.adminEditWord('${escapeHtml(w.id)}')">✎</button>
+      <button class="icon-btn" onclick="event.stopPropagation(); window.adminDeleteWord('${escapeHtml(w.id)}')">🗑</button>
+    ` : '';
+
+    html += `
+    <div class="word-item" onclick="window.showWordDetails('${escapeHtml(w.id)}')">
+      <div class="word-info">
+        <div class="word-pair">
+          <span class="wp-eng">${escapeHtml(w.eng)}</span>
+          <span style="color:var(--text3);">→</span>
+          <span class="wp-any">${escapeHtml(w.any || '...')}</span>
+        </div>
+        <div class="word-meta">📁 ${escapeHtml(CAT_LABELS[w.cat] || w.cat || 'General')}${w.pron ? ` 🔊 ${escapeHtml(w.pron)}` : ''}</div>
+      </div>
+      <div class="word-acts">
+        <button class="icon-btn ${w.fav ? 'fav-on' : ''}" onclick="event.stopPropagation(); window.adminToggleFav('${escapeHtml(w.id)}')">${w.fav ? '⭐' : '☆'}</button>
+        ${adminBtns}
+      </div>
+    </div>`;
+  });
+
+  if (!isPrem && totalInPool > 10) {
+    html += `<div style="padding:18px;text-align:center;background:var(--green-light);border-radius:var(--radius-sm);margin-top:9px;">
+      <div style="font-size:1rem;font-weight:700;color:var(--green);margin-bottom:7px;">🔒 10-word free limit</div>
+      <p style="font-size:.68rem;color:var(--text2);margin-bottom:11px;">Upgrade to Premium to unlock all ${state.dict.length} words.</p>
+      <button class="btn btn-purple" onclick="showModal('paymentModal')">⭐ Upgrade Now</button>
+    </div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+window.adminToggleFav = async function(id) {
+  const w = state.dict.find(x => x.id === id);
+  if (!w) return;
+  const newFav = !w.fav;
+  w.fav = newFav;
+  renderDict();
+  try {
+    await updateDoc(doc(db, "dictionary", id), { fav: newFav });
+    showToast(newFav ? "⭐ Added to favorites" : "Removed from favorites");
+  } catch(err) {
+    showToast("⚠️ Sync error: " + err.message);
+    w.fav = !newFav;
+    renderDict();
+  }
+};
+
+window.adminEditWord = function(id) { loadWordToForm(id); };
+window.adminDeleteWord = function(id) { deleteWordFromFirebase(id); };
+
+function setWordOfDay() {
+  if (state.dict.length > 0) {
+    let pool = [...state.dict];
+    if (!isPremiumUser()) pool = pool.slice(0, 10);
+    const interval = Math.floor(Date.now() / 30000);
+    const w = pool[interval % pool.length];
+    document.getElementById("wodEng").textContent = w.eng || "";
+    document.getElementById("wodAny").textContent = w.any || "";
+  }
+}
+
+// ══════════════════════════════════════════════
+//  ADMIN USER RENDERING
+// ══════════════════════════════════════════════
+function renderAdminUsers() {
+  const list = document.getElementById("adminUserList");
+  const expList = document.getElementById("expiredList");
+  const now = new Date();
+  document.getElementById("adminUserCount").textContent = state.users.length;
+  document.getElementById("anaWords").textContent = state.dict.length;
+  document.getElementById("anaUsers").textContent = state.users.length;
+  document.getElementById("anaPrem").textContent = state.users.filter(u => u.premium?.active).length;
+  const todayStr = now.toDateString();
+  document.getElementById("anaToday").textContent = state.users.filter(u => {
+    if (!u.lastLogin) return false;
+    const d = u.lastLogin.toDate ? u.lastLogin.toDate() : new Date(u.lastLogin);
+    return d.toDateString() === todayStr;
+  }).length;
+  const expired = state.users.filter(u => u.premium?.expiryDate && new Date(u.premium.expiryDate) < now);
+  document.getElementById("expiredCount").textContent = expired.length;
+
+  const renderUser = (u) => {
+    const isPrem = u.premium?.active;
+    const expDate = u.premium?.expiryDate ? new Date(u.premium.expiryDate) : null;
+    const isExp = expDate && expDate < now;
+    const daysLeft = expDate ? Math.ceil((expDate - now) / (1000 * 60 * 60 * 24)) : null;
+    const displayId = u.email || u.phone || u.identifier || u.id;
+    const isEmail = displayId && displayId.includes('@');
+    const idIcon = isEmail ? "📧" : "📱";
+    let statusHtml;
+    if (isPrem && !isExp) statusHtml = `<span style="color:var(--green);font-weight:700;">⭐ Premium · ${daysLeft}d left</span>`;
+    else if (isExp) statusHtml = `<span style="color:var(--red);font-weight:700;">❌ Expired</span>`;
+    else statusHtml = `<span style="color:var(--text3);">Free · ${u.freeWordsUsed || 0}/10 used</span>`;
+    const joinDate = u.createdAt ? (u.createdAt.toDate ? u.createdAt.toDate() : new Date(u.createdAt)).toLocaleDateString() : "Unknown";
+    return `
+      <div class="user-item">
+        <div class="user-item-header">
+          <span class="user-item-id" onclick="window.quickUnlock('${escapeHtml(displayId)}')" style="cursor:pointer;text-decoration:underline dotted;">${idIcon} ${escapeHtml(displayId)}</span>
+          <span class="user-item-status">${statusHtml}</span>
+        </div>
+        <div style="margin-top:2px;font-size:.6rem;color:var(--text3);">Joined: ${joinDate} · ${expDate ? 'Exp: ' + expDate.toLocaleDateString() : 'No expiry'}</div>
+        <div style="margin-top:5px;display:flex;gap:3px;flex-wrap:wrap;">
+          <button class="btn btn-sm" style="font-size:.58rem;flex:0 1 auto;" onclick="window.quickUnlock('${escapeHtml(displayId)}')">📋 Fill Unlock</button>
+          <button class="btn btn-outline btn-sm" style="font-size:.58rem;flex:0 1 auto;" onclick="window.quickGrace('${escapeHtml(displayId)}')">🎁 +1 Week</button>
+          <button class="btn btn-sm" style="font-size:.58rem;flex:0 1 auto;background:var(--purple);" onclick="window.quickUnlockNow('${escapeHtml(displayId)}')">🔓 1 Month</button>
+          <button class="btn btn-danger btn-sm" style="font-size:.58rem;flex:0 1 auto;" onclick="window.deleteUserFromFirebase('${escapeHtml(u.id)}')">🗑 Delete</button>
+        </div>
+      </div>`;
+  };
+
+  const sorted = [...state.users].sort((a, b) => {
+    const aFree = !a.premium?.active ? 0 : 1;
+    const bFree = !b.premium?.active ? 0 : 1;
+    return aFree - bFree;
+  });
+
+  list.innerHTML = sorted.length ? sorted.map(renderUser).join('') : '<p style="color:var(--text3);font-size:.68rem;padding:7px;">No users yet.</p>';
+  expList.innerHTML = expired.length ? expired.map(renderUser).join('') : '<p style="color:var(--text3);font-size:.68rem;padding:7px;">No expired users.</p>';
+}
+
+window.quickUnlock = function(identifier) {
+  document.getElementById("unlockId").value = identifier;
+  document.getElementById("unlockId").focus();
+  document.getElementById("unlockBtn").scrollIntoView({ behavior: "smooth", block: "center" });
+  showToast("✅ \"" + identifier + "\" filled in Unlock box ↓");
+};
+window.quickGrace = async function(identifier) {
+  const res = await unlockUser(identifier, "week");
+  showToast(res.msg);
+  renderAdminUsers();
+};
+window.quickUnlockNow = async function(identifier) {
+  if (!confirm("Unlock 1 month premium for: " + identifier + "?")) return;
+  const res = await unlockUser(identifier, "monthly");
+  showToast(res.msg);
+  renderAdminUsers();
+};
+window.deleteUserFromFirebase = async function(userId) {
+  if (!confirm("Are you sure you want to delete this user? This cannot be undone.")) return;
+  try {
+    await deleteDoc(doc(db, "users", userId));
+    showToast("✅ User deleted successfully");
+  } catch(e) { showToast("❌ Failed to delete user: " + e.message); }
+};
+
+function renderTrends() {
+  const list = document.getElementById("trendsList");
+  const sorted = Object.entries(state.trends).sort((a, b) => b[1] - a[1]).slice(0, 15);
+  list.innerHTML = sorted.length
+    ? sorted.map(([w, c]) => `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:.7rem;border-bottom:1px solid var(--border);"><span>${escapeHtml(w)}</span><span style="color:var(--green);font-weight:700;">${c}x</span></div>`).join('')
+    : '<p style="color:var(--text3);font-size:.68rem;">No trends yet.</p>';
+}
+
+function loadWordToForm(id) {
+  const w = state.dict.find(x => x.id === id);
+  if (!w) return;
+  document.getElementById("aw_id").value = w.id;
+  document.getElementById("aw_eng").value = w.eng || "";
+  document.getElementById("aw_any").value = w.any || "";
+  document.getElementById("aw_cat").value = w.cat || "general";
+  document.getElementById("aw_pron").value = w.pron || "";
+  document.getElementById("aw_def_eng").value = w.defEng || "";
+  document.getElementById("aw_def_any").value = w.defAny || "";
+  document.getElementById("aw_example").value = w.example || "";
+  document.getElementById("aw_synonyms").value = w.synonyms || "";
+  document.getElementById("aw_antonyms").value = w.antonyms || "";
+  document.getElementById("aw_explanation").value = w.explanation || "";
+  document.getElementById("aw_eng").focus();
+  document.getElementById("adminPanel").scrollIntoView({ behavior: "smooth" });
+  showToast("Word loaded for editing");
+}
+
+// ══════════════════════════════════════════════
+//  BUG FIX #2: ENHANCED BULK IMPORT PARSER
+//  Format: english:anyuak:category:pronunciation:engDef:anyDef:example:synonyms:antonyms:explanation
+//  All fields after english are optional
+// ══════════════════════════════════════════════
+function parseBulkLine(line) {
+  const raw = line.trim();
+  if (!raw || raw.startsWith('#')) return null; // skip empty or comment lines
+
+  const parts = raw.split(':');
+  // parts[0] = english (required)
+  // parts[1] = anyuak (optional)
+  // parts[2] = category (optional, default general)
+  // parts[3] = pronunciation (optional)
+  // parts[4] = english definition (optional)
+  // parts[5] = anyuak definition (optional)
+  // parts[6] = example sentence (optional)
+  // parts[7] = synonyms (optional)
+  // parts[8] = antonyms (optional)
+  // parts[9] = explanation/quiz tip (optional)
+
+  const eng = (parts[0] || "").trim().toLowerCase();
+  if (!eng) return { error: "English word is empty" };
+
+  const validCats = ["general","nature","family","food","body","animals","greetings","education"];
+  const rawCat = (parts[2] || "").trim().toLowerCase();
+  const cat = validCats.includes(rawCat) ? rawCat : "general";
+
+  return {
+    eng,
+    any: (parts[1] || "").trim(),
+    cat,
+    pron: (parts[3] || "").trim(),
+    defEng: (parts[4] || "").trim(),
+    defAny: (parts[5] || "").trim(),
+    example: (parts[6] || "").trim(),
+    synonyms: (parts[7] || "").trim(),
+    antonyms: (parts[8] || "").trim(),
+    explanation: (parts[9] || "").trim(),
+  };
+}
+
+function previewBulk() {
+  const lines = document.getElementById("bulkText").value.split(/\r?\n/).filter(l => l.trim());
+  const preview = document.getElementById("bulkPreviewBox");
+  const statsDiv = document.getElementById("bulkPreviewStats");
+
+  let valid = 0, blank = 0, errors = 0, dups = 0;
+  let html = "";
+
+  lines.forEach((line, i) => {
+    if (!line.trim() || line.trim().startsWith('#')) return;
+    const parsed = parseBulkLine(line);
+    if (!parsed) return;
+    if (parsed.error) {
+      errors++;
+      html += `<div class="bulk-preview-row bulk-err">❌ Line ${i+1}: ${escapeHtml(parsed.error)} — "${escapeHtml(line)}"</div>`;
+      return;
+    }
+    const isDup = state.dict.some(w => w.eng.toLowerCase() === parsed.eng);
+    if (isDup) {
+      dups++;
+      html += `<div class="bulk-preview-row bulk-warn">⏭️ Line ${i+1}: DUPLICATE — "${escapeHtml(parsed.eng)}"</div>`;
+      return;
+    }
+    if (!parsed.any) {
+      blank++;
+      html += `<div class="bulk-preview-row bulk-warn">⚠️ Line ${i+1}: <strong>${escapeHtml(parsed.eng)}</strong> → (no Anyuak yet) [${escapeHtml(parsed.cat)}]</div>`;
+    } else {
+      valid++;
+      html += `<div class="bulk-preview-row bulk-ok">✅ Line ${i+1}: <strong>${escapeHtml(parsed.eng)}</strong> → <em>${escapeHtml(parsed.any)}</em> [${escapeHtml(parsed.cat)}]${parsed.pron ? ' 🔊' + escapeHtml(parsed.pron) : ''}${parsed.defEng ? ' 📖' : ''}${parsed.example ? ' 💬' : ''}</div>`;
+    }
+  });
+
+  document.getElementById("bulkValidCount").textContent = valid;
+  document.getElementById("bulkBlankCount").textContent = blank;
+  document.getElementById("bulkErrCount").textContent = errors;
+  document.getElementById("bulkDupCount").textContent = dups;
+
+  statsDiv.style.display = "flex";
+  preview.innerHTML = html || '<div class="bulk-preview-row" style="color:var(--text3);">No valid lines found.</div>';
+  preview.classList.add("show");
+}
+
+// ══════════════════════════════════════════════
+//  EXPORT FUNCTIONS (new feature)
+// ══════════════════════════════════════════════
+function downloadFile(content, filename, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function exportAsTxt() {
+  if (!state.dict.length) return showToast("No words to export.");
+  const lines = state.dict
+    .sort((a, b) => (a.eng||"").localeCompare(b.eng||""))
+    .map(w => [
+      w.eng || "", w.any || "", w.cat || "general",
+      w.pron || "", w.defEng || "", w.defAny || "",
+      w.example || "", w.synonyms || "", w.antonyms || "", w.explanation || ""
+    ].join(':'));
+  const header = "# Anyuak Dictionary Export\n# Format: english:anyuak:category:pronunciation:eng_def:any_def:example:synonyms:antonyms:explanation\n# Generated: " + new Date().toLocaleDateString() + "\n\n";
+  downloadFile(header + lines.join('\n'), "anyuak_dictionary.txt", "text/plain");
+  showToast(`📄 Exported ${state.dict.length} words as .txt`);
+}
+
+function exportAsJson() {
+  if (!state.dict.length) return showToast("No words to export.");
+  const clean = state.dict.map(({ id, createdAt, ...rest }) => rest);
+  downloadFile(JSON.stringify(clean, null, 2), "anyuak_dictionary.json", "application/json");
+  showToast(`📦 Exported ${state.dict.length} words as .json`);
+}
+
+function exportAsCsv() {
+  if (!state.dict.length) return showToast("No words to export.");
+  const header = "english,anyuak,category,pronunciation,eng_definition,any_definition,example,synonyms,antonyms,explanation";
+  const rows = state.dict
+    .sort((a, b) => (a.eng||"").localeCompare(b.eng||""))
+    .map(w => [
+      w.eng, w.any, w.cat, w.pron, w.defEng, w.defAny,
+      w.example, w.synonyms, w.antonyms, w.explanation
+    ].map(v => `"${(v||"").replace(/"/g,'""')}"`).join(','));
+  downloadFile(header + '\n' + rows.join('\n'), "anyuak_dictionary.csv", "text/csv");
+  showToast(`📊 Exported ${state.dict.length} words as .csv`);
+}
+
+// ══════════════════════════════════════════════
+//  QUIZ
+// ══════════════════════════════════════════════
+function generateQuizQuestions() {
+  // BUG FIX #3: Reset quizAnswered when generating new questions
+  quizAnswered = false;
+  document.getElementById("quizMsg").className = "quiz-result-msg";
+  document.getElementById("quizMsg").innerHTML = "";
+
+  let pool = (quizCategory !== "all" && quizCategory !== "favorites")
+    ? state.dict.filter(w => (w.cat || "").toLowerCase() === quizCategory.toLowerCase() && w.any)
+    : (quizCategory === "favorites" ? state.dict.filter(w => w.fav && w.any) : state.dict.filter(w => w.any));
+  if (!isPremiumUser()) pool = pool.slice(0, 10);
+  if (pool.length < 4) {
+    document.getElementById("quizQ").innerHTML = `📖 Add at least 4 words with Anyuak translations in this category!`;
+    document.getElementById("quizOpts").innerHTML = "";
+    document.getElementById("quizScore").textContent = "";
+    document.getElementById("quizNextBtn").textContent = UI_STRINGS[state.currentLang].startQuiz;
+    quizQuestions = [];
+    return;
+  }
+  quizQuestions = [...pool].sort(() => Math.random() - 0.5).slice(0, Math.min(10, pool.length));
+  quizIndex = 0; quizScore = 0;
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  const qEl = document.getElementById("quizQ");
+  const oEl = document.getElementById("quizOpts");
+  const rEl = document.getElementById("quizMsg");
+  const sEl = document.getElementById("quizScore");
+  const nEl = document.getElementById("quizNextBtn");
+  if (!quizQuestions.length) { qEl.innerHTML = "📖 Press Start to begin!"; oEl.innerHTML = ""; nEl.textContent = "Start Quiz"; return; }
+  if (quizIndex >= quizQuestions.length) {
+    const pct = Math.round((quizScore / quizQuestions.length) * 100);
+    qEl.innerHTML = "🎉 Quiz Complete!"; oEl.innerHTML = "";
+    rEl.className = "quiz-result-msg show";
+    rEl.innerHTML = `<div style="background:var(--green-light);padding:13px;border-radius:30px;"><strong>Score: ${quizScore}/${quizQuestions.length} (${pct}%)</strong><br><span style="font-size:.68rem;">${pct>=80?'🏆 Excellent!':pct>=60?'👍 Good job!':'📖 Keep practicing!'}</span></div>`;
+    sEl.innerHTML = ""; nEl.textContent = "🔄 Restart Quiz";
+    if (pct > (userStats.quizHigh || 0)) { userStats.quizHigh = pct; saveUserStats(); }
+    return;
+  }
+  const current = quizQuestions[quizIndex];
+  const isEA = quizMode === "eng-any";
+  const qWord = isEA ? current.eng : current.any;
+  const correct = isEA ? current.any : current.eng;
+  let distractors = state.dict.filter(w => w.id !== current.id && (quizCategory === "all" || w.cat === quizCategory));
+  if (distractors.length < 3) distractors = state.dict.filter(w => w.id !== current.id);
+  const wrong = distractors.sort(() => Math.random() - 0.5).slice(0, 3).map(w => isEA ? w.any : w.eng).filter(Boolean);
+  // BUG FIX #4: ensure we always have enough options by padding if needed
+  while (wrong.length < 3 && distractors.length > wrong.length) {
+    const extra = distractors[wrong.length];
+    const v = isEA ? extra.any : extra.eng;
+    if (v && !wrong.includes(v)) wrong.push(v);
+  }
+  const opts = [correct, ...wrong.slice(0, 3)].filter(Boolean).sort(() => Math.random() - 0.5);
+  qEl.innerHTML = `Translate: <strong>"${escapeHtml(qWord)}"</strong>`;
+  oEl.innerHTML = opts.map(o => `<div class="quiz-option" data-val="${escapeHtml(o)}">${escapeHtml(o)}</div>`).join('');
+  rEl.className = "quiz-result-msg"; rEl.innerHTML = "";
+  sEl.innerHTML = `Score: ${quizScore}/${quizQuestions.length} · Q${quizIndex + 1}/${quizQuestions.length}`;
+  nEl.textContent = "Next →"; quizAnswered = false;
+}
+
+function answerQuiz(val) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const current = quizQuestions[quizIndex];
+  const correct = quizMode === "eng-any" ? current.any : current.eng;
+  if (val === correct) quizScore++;
+  document.querySelectorAll(".quiz-option").forEach(opt => {
+    if (opt.dataset.val === correct) opt.classList.add("correct");
+    else if (opt.dataset.val === val && val !== correct) opt.classList.add("wrong");
+  });
+  const rEl = document.getElementById("quizMsg");
+  rEl.className = "quiz-result-msg show";
+  let msg = val === correct
+    ? `<div style="background:#2e7d32;color:#fff;padding:7px;border-radius:20px;">✓ Correct!</div>`
+    : `<div style="background:var(--red);color:#fff;padding:7px;border-radius:20px;">✗ Wrong! Answer: "${escapeHtml(correct)}"</div>`;
+  if (val !== correct && current.explanation) {
+    msg += `<div style="margin-top:7px;font-size:.72rem;color:var(--text2);background:var(--surface2);padding:7px;border-radius:10px;border-left:3px solid var(--red);"><strong>Explanation:</strong> ${escapeHtml(current.explanation)}</div>`;
+  }
+  rEl.innerHTML = msg;
+  document.getElementById("quizScore").textContent = `Score: ${quizScore}/${quizQuestions.length}`;
+}
+
+// ══════════════════════════════════════════════
+//  MODAL HELPERS
+// ══════════════════════════════════════════════
+function showModal(id) { const el = document.getElementById(id); if (el) el.style.display = "flex"; }
+function hideModal(id) { const el = document.getElementById(id); if (el) el.style.display = "none"; }
+window.showModal = showModal;
+window.hideModal = hideModal;
+
+// ══════════════════════════════════════════════
+//  CLIPBOARD HELPER — BUG FIX #5
+//  Proper fallback for browsers without navigator.clipboard
+// ══════════════════════════════════════════════
+function copyToClipboard(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text).then(() => showToast("📋 Copied!")).catch(() => fallbackCopy(text));
+  }
+  fallbackCopy(text);
+}
+function fallbackCopy(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.cssText = "position:fixed;left:-9999px;top:-9999px;opacity:0;";
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand('copy'); showToast("📋 Copied!"); }
+  catch(e) { showToast("❌ Copy failed. Please copy manually."); }
+  document.body.removeChild(ta);
+}
+
+// ══════════════════════════════════════════════
+//  CALCULATOR VAULT LOGIC
+// ══════════════════════════════════════════════
+let calcInput = '';
+let vaultDb;
+
+function initVaultDb() {
+  if (vaultDb) return;
+  const request = indexedDB.open('VaultDB', 1);
+  request.onupgradeneeded = (e) => {
+    vaultDb = e.target.result;
+    if (!vaultDb.objectStoreNames.contains('media')) {
+      vaultDb.createObjectStore('media', { keyPath: 'id', autoIncrement: true });
+    }
+  };
+  request.onsuccess = (e) => {
+    vaultDb = e.target.result;
+  };
+  request.onerror = (e) => {
+    console.error('IndexedDB error:', e.target.error);
+  };
+}
+
+window.press = function(n) {
+  calcInput += n;
+  const disp = document.getElementById('display');
+  if (disp) disp.value = calcInput;
+  const err = document.getElementById('calcErrorMsg');
+  if (err) err.style.display = 'none';
+};
+
+window.clearDisplay = function() {
+  calcInput = '';
+  const disp = document.getElementById('display');
+  if (disp) disp.value = '';
+  const err = document.getElementById('calcErrorMsg');
+  if (err) err.style.display = 'none';
+};
+
+window.check = function() {
+  if (calcInput === '1234') {
+    showVault();
+  } else if (calcInput === '0000') {
+    showFakeVault();
+  } else {
+    const err = document.getElementById('calcErrorMsg');
+    if (err) err.style.display = 'block';
+  }
+  calcInput = '';
+  const disp = document.getElementById('display');
+  if (disp) disp.value = '';
+};
+
+window.showVault = function() {
+  document.getElementById('calculator-container').style.display = 'none';
+  document.getElementById('vault-container').style.display = 'block';
+  document.getElementById('fake-vault').style.display = 'none';
+  loadMedia();
+};
+
+window.showFakeVault = function() {
+  document.getElementById('calculator-container').style.display = 'none';
+  document.getElementById('vault-container').style.display = 'none';
+  document.getElementById('fake-vault').style.display = 'block';
+};
+
+window.hideVault = function() {
+  document.getElementById('calculator-container').style.display = 'block';
+  document.getElementById('vault-container').style.display = 'none';
+  document.getElementById('fake-vault').style.display = 'none';
+  const err = document.getElementById('calcErrorMsg');
+  if (err) err.style.display = 'none';
+};
+
+window.handleUpload = function(input) {
+  const files = input.files;
+  if (!files || !files.length) return;
+  for (let i = 0; i < files.length; i++) {
+    saveMedia(files[i]);
+  }
+  input.value = '';
+};
+
+function saveMedia(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    if (!vaultDb) return;
+    const transaction = vaultDb.transaction(['media'], 'readwrite');
+    const store = transaction.objectStore('media');
+    const mediaItem = {
+      name: file.name,
+      type: file.type,
+      data: e.target.result,
+      timestamp: Date.now()
+    };
+    store.add(mediaItem);
+    transaction.oncomplete = () => {
+      loadMedia();
+    };
+  };
+  reader.readAsDataURL(file);
+}
+
+window.loadMedia = function() {
+  if (!vaultDb) return;
+  const transaction = vaultDb.transaction(['media'], 'readonly');
+  const store = transaction.objectStore('media');
+  const request = store.getAll();
+  request.onsuccess = (e) => {
+    renderMedia(e.target.result || []);
+  };
+};
+
+function renderMedia(items) {
+  const imagesGallery = document.getElementById('images-gallery');
+  const musicGallery = document.getElementById('music-gallery');
+  const videosGallery = document.getElementById('videos-gallery');
+
+  if (imagesGallery) imagesGallery.innerHTML = '';
+  if (musicGallery) musicGallery.innerHTML = '';
+  if (videosGallery) videosGallery.innerHTML = '';
+
+  items.forEach(item => {
+    const div = document.createElement('div');
+    if (item.type.startsWith('image/')) {
+      div.className = 'col-6 col-md-4';
+      div.innerHTML = `
+        <div class="media-item">
+          <img src="${item.data}" alt="${escapeHtml(item.name)}" onclick="window.open('${item.data}')" style="cursor:pointer;">
+          <button class="delete-btn" onclick="deleteMedia(${item.id})">×</button>
+        </div>
+      `;
+      if (imagesGallery) imagesGallery.appendChild(div);
+    } else if (item.type.startsWith('audio/')) {
+      div.className = 'list-group-item';
+      div.innerHTML = `
+        <span class="text-truncate me-2" style="max-width:140px;">${escapeHtml(item.name)}</span>
+        <div class="d-flex align-items-center">
+          <audio src="${item.data}" controls style="height: 30px; max-width:150px;"></audio>
+          <button class="btn btn-sm btn-danger ms-2" onclick="deleteMedia(${item.id})" style="padding:2px 8px;">×</button>
+        </div>
+      `;
+      if (musicGallery) musicGallery.appendChild(div);
+    } else if (item.type.startsWith('video/')) {
+      div.className = 'col-6 col-md-4';
+      div.innerHTML = `
+        <div class="media-item">
+          <video src="${item.data}" controls></video>
+          <button class="delete-btn" onclick="deleteMedia(${item.id})">×</button>
+        </div>
+      `;
+      if (videosGallery) videosGallery.appendChild(div);
+    }
+  });
+}
+
+window.deleteMedia = function(id) {
+  if (!vaultDb) return;
+  const transaction = vaultDb.transaction(['media'], 'readwrite');
+  const store = transaction.objectStore('media');
+  store.delete(id);
+  transaction.oncomplete = () => {
+    loadMedia();
+  };
+};
+
+function setupCalcVault() {
+  initVaultDb();
+
+  const calcVaultBtn = document.getElementById('calcVaultBtn');
+  const calcVaultModal = document.getElementById('calcVaultModal');
+  const closeCalcVaultBtn = document.getElementById('closeCalcVaultBtn');
+
+  if (calcVaultBtn && calcVaultModal) {
+    calcVaultBtn.addEventListener('click', () => {
+      calcVaultModal.style.display = 'flex';
+      hideVault();
+    });
+  }
+
+  if (closeCalcVaultBtn && calcVaultModal) {
+    closeCalcVaultBtn.addEventListener('click', () => {
+      calcVaultModal.style.display = 'none';
+      hideVault();
+    });
+  }
+
+  // Navigation tab switcher for vaultTabs
+  const tabs = document.querySelectorAll('#vaultTabs .nav-link');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      e.preventDefault();
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const targetId = tab.getAttribute('data-bs-target') || tab.getAttribute('href');
+      const panes = document.querySelectorAll('#vaultTabContent .tab-pane');
+      panes.forEach(pane => {
+        pane.classList.remove('show', 'active');
+        pane.style.display = 'none';
+      });
+
+      const targetPane = document.querySelector(targetId);
+      if (targetPane) {
+        targetPane.classList.add('show', 'active');
+        targetPane.style.display = 'block';
+      }
+    });
+  });
+}
+
+// ══════════════════════════════════════════════
+//  EVENT LISTENERS
+// ══════════════════════════════════════════════
+function setupEvents() {
+  setupCalcVault();
+  // TABS
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(tt => tt.classList.remove('active'));
+    t.classList.add('active');
+    const tab = t.dataset.tab;
+    document.getElementById("translatePanel").style.display = tab === 'translate' ? 'block' : 'none';
+    const qp = document.getElementById("quizPanel");
+    if (tab === 'quiz') { qp.classList.add("active"); generateQuizQuestions(); }
+    else qp.classList.remove("active");
+  }));
+
+  // THEME PICKER
+  document.getElementById("themePicker").addEventListener("click", e => {
+    const dot = e.target.closest(".theme-dot");
+    if (dot) applyTheme(dot.dataset.theme);
+  });
+
+  // LANGUAGE TOGGLE
+  document.getElementById("langBtn").addEventListener('click', toggleLanguage);
+
+  document.getElementById("shareAppBtn").addEventListener('click', async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Anyuak Translator',
+          text: 'Learn and translate Anyuak language with this amazing app!',
+          url: window.location.href
+        });
+      } catch (err) { console.log('Share failed:', err); }
+    } else {
+      copyToClipboard(window.location.href);
+      showToast("App link copied to clipboard!");
+    }
+  });
+
+  // ADMIN (triple-tap footer)
+  let tapCount = 0, tapTimer;
+  document.getElementById("adminTrigger").addEventListener('click', () => {
+    tapCount++;
+    clearTimeout(tapTimer);
+    tapTimer = setTimeout(() => {
+      if (tapCount >= 3) { showModal('adminAuthModal'); document.getElementById('adminAuthPwd').focus(); }
+      tapCount = 0;
+    }, 600);
+  });
+  document.getElementById("doAdminAuthBtn").addEventListener('click', () => {
+    const pwd = document.getElementById("adminAuthPwd").value;
+    if (pwd === ADMIN_PWD) {
+      state.isAdmin = true;
+      document.getElementById("adminPanel").classList.add("show");
+      renderAdminUsers();
+      renderTrends();
+      startAdminListeners();
+      updateFreeLimitBar();
+      hideModal('adminAuthModal');
+      document.getElementById("adminAuthPwd").value = "";
+      showToast(`✅ Admin mode · ${state.users.length} users, ${state.dict.length} words`);
+    } else { showToast("❌ Wrong password"); }
+  });
+  document.getElementById("adminAuthPwd").addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById("doAdminAuthBtn").click(); });
+
+  // LOGIN / REGISTER
+  document.getElementById("showLoginBtn").addEventListener('click', () => showModal('loginModal'));
+  document.getElementById("closeLoginBtn").addEventListener('click', () => hideModal('loginModal'));
+  document.getElementById("doLoginModalBtn").addEventListener('click', async () => {
+    const id = document.getElementById("loginInput").value;
+    const res = await loginUser(id);
+    showToast(res.msg);
+    if (res.ok) { hideModal('loginModal'); renderDict(); }
+  });
+  document.getElementById("doRegisterModalBtn").addEventListener('click', async () => {
+    const id = document.getElementById("loginInput").value;
+    const res = await registerUser(id);
+    showToast(res.msg);
+    if (res.ok) { hideModal('loginModal'); renderDict(); }
+  });
+  document.getElementById("loginInput").addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById("doLoginModalBtn").click();
+  });
+
+  // LOGOUT / SYNC / UPGRADE
+  document.getElementById("logoutBtn").addEventListener('click', logoutUser);
+  document.getElementById("syncBtn").addEventListener('click', () => {
+    showToast("🔄 Syncing with cloud...");
+    setTimeout(() => showToast(`✅ Synced! ${state.dict.length} words`), 800);
+  });
+  document.getElementById("upgradeBtn").addEventListener('click', () => showModal("paymentModal"));
+
+  // PROFILE
+  document.getElementById("profileBtn").addEventListener('click', () => {
+    const u = currentUser; if (!u) return;
+    document.getElementById("profName").value = u.name || "";
+    document.getElementById("profEmoji").value = u.emoji || "";
+    document.getElementById("profPic").value = u.pic || "";
+    document.getElementById("profBio").value = u.bio || "";
+    const picDisp = document.getElementById("profilePicDisplay");
+    picDisp.innerHTML = u.pic ? `<img src="${escapeHtml(u.pic)}" style="width:100%;height:100%;object-fit:cover;">` : "👤";
+    document.getElementById("profileEmojiDisplay").textContent = u.emoji || "";
+    showModal("profileModal");
+  });
+  document.getElementById("profPicFile").addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 500000) return showToast("❌ File too large (max 500KB)");
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        document.getElementById("profPic").value = event.target.result;
+        document.getElementById("profilePicDisplay").innerHTML = `<img src="${event.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+  document.getElementById("saveProfileBtn").addEventListener('click', async () => {
+    if (!currentUser) return;
+    const name = document.getElementById("profName").value.trim();
+    const emoji = document.getElementById("profEmoji").value.trim();
+    const pic = document.getElementById("profPic").value.trim();
+    const bio = document.getElementById("profBio").value.trim();
+    try {
+      updateConnStatus("Saving profile...", "saving");
+      await updateDoc(doc(db, "users", currentUser.id), { name, emoji, pic, bio });
+      currentUser.name = name; currentUser.emoji = emoji; currentUser.pic = pic; currentUser.bio = bio;
+      updateLoginUI(); showToast("✅ Profile updated!"); updateConnStatus("Saved");
+    } catch(e) { showToast("❌ Save failed: " + e.message); }
+  });
+  document.getElementById("closeProfileBtn").addEventListener('click', () => hideModal("profileModal"));
+
+  // HISTORY
+  document.getElementById("historyBtn").addEventListener('click', () => {
+    const hist = userStats.history || [];
+    const s = UI_STRINGS[state.currentLang];
+    document.getElementById("historyList").innerHTML = hist.length
+      ? hist.map(h => `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);"><span>${escapeHtml(h.eng)}</span><span style="color:var(--green);font-style:italic;">${escapeHtml(h.any || '...')}</span></div>`).join('')
+      : `<p style="text-align:center;color:var(--text3);">${s.noHistory}</p>`;
+    showModal("historyModal");
+  });
+
+  // BADGES
+  document.getElementById("badgesBtn").addEventListener('click', () => {
+    const tr = userStats.totalTrans || 0, st = userStats.streakDays || 0, hs = userStats.quizHigh || 0;
+    const bn = UI_STRINGS[state.currentLang].badgeNames;
+    const badges = [
+      { name: bn[0], icon: "📗", earned: tr >= 1 }, { name: bn[1], icon: "📘", earned: tr >= 50 },
+      { name: bn[2], icon: "📙", earned: tr >= 200 }, { name: bn[3], icon: "📕", earned: tr >= 500 },
+      { name: bn[4], icon: "🔥", earned: st >= 3 }, { name: bn[5], icon: "💫", earned: st >= 7 },
+      { name: bn[6], icon: "⚡", earned: st >= 30 }, { name: bn[7], icon: "🎯", earned: hs >= 50 },
+      { name: bn[8], icon: "🏆", earned: hs >= 80 }, { name: bn[9], icon: "👑", earned: hs >= 100 }
+    ];
+    document.getElementById("badgesGrid").innerHTML = badges.map(b => `
+      <div style="width:76px;padding:7px;border-radius:12px;text-align:center;border:1px solid var(--border);background:${b.earned?'var(--green-light)':'var(--surface2)'};opacity:${b.earned?1:0.5};">
+        <div style="font-size:1.3rem;">${b.earned?b.icon:'🔒'}</div>
+        <div style="font-size:.58rem;font-weight:600;margin-top:3px;">${escapeHtml(b.name)}</div>
+      </div>`).join('');
+    showModal("badgesModal");
+  });
+
+  document.getElementById("closePayBtn").addEventListener('click', () => hideModal('paymentModal'));
+  document.getElementById("closeHistoryBtn").addEventListener('click', () => hideModal("historyModal"));
+  document.getElementById("closeBadgesBtn").addEventListener('click', () => hideModal("badgesModal"));
+
+  const clearHistoryFn = () => {
+    if (confirm("Clear all translation history?")) {
+      userStats.history = [];
+      saveUserStats();
+      document.getElementById("historyList").innerHTML = '<p style="text-align:center;color:var(--text3);">No history yet.</p>';
+      showToast("History cleared");
+    }
+  };
+  document.getElementById("clearHistoryBtn").addEventListener('click', clearHistoryFn);
+  document.getElementById("clearHistoryProfileBtn").addEventListener('click', clearHistoryFn);
+
+  document.getElementById("resetStreakBtn").addEventListener('click', () => {
+    if (!currentUser) return;
+    if (confirm("Are you sure you want to reset your streak?")) {
+      userStats.streakDays = 0;
+      userStats.lastActive = null;
+      saveUserStats();
+      updateStatsUI();
+      updateLoginUI();
+      showToast("🔥 Streak reset to 0");
+    }
+  });
+
+  // TRANSLATE
+  document.getElementById("translateBtn").addEventListener('click', translate);
+  document.getElementById("inputText").addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); translate(); }
+  });
+  document.getElementById("inputText").addEventListener('input', () => {
+    const val = document.getElementById("inputText").value.toLowerCase().trim();
+    const sugEl = document.getElementById("suggestions");
+    if (val.length < 1) { sugEl.classList.remove("show"); return; }
+    const matches = state.dict.filter(w => {
+      const eng = (w.eng || "").toLowerCase();
+      const any = (w.any || "").toLowerCase();
+      return eng.startsWith(val) || any.startsWith(val) || (val.length > 2 && (eng.includes(val) || any.includes(val)));
+    }).slice(0, 10);
+    if (matches.length) {
+      sugEl.innerHTML = matches.map(w => `<div class="sug-item" data-eng="${escapeHtml(w.eng)}"><span>${escapeHtml(w.eng)}</span><span class="sug-any">${escapeHtml(w.any || '...')}</span></div>`).join('');
+      sugEl.classList.add("show");
+    } else { sugEl.classList.remove("show"); }
+  });
+  document.getElementById("suggestions").addEventListener('click', e => {
+    const item = e.target.closest('.sug-item');
+    if (item) {
+      document.getElementById("inputText").value = item.dataset.eng;
+      document.getElementById("suggestions").classList.remove("show");
+      translate();
+    }
+  });
+
+  document.getElementById("clearBtn").addEventListener('click', () => {
+    document.getElementById("inputText").value = "";
+    document.getElementById("resultText").innerHTML = "—";
+    document.getElementById("resultPron").innerHTML = "";
+    document.getElementById("resultExtras").style.display = "none";
+    document.getElementById("speakBtn").style.display = "none";
+    document.getElementById("shareRow").style.display = "none";
+    document.getElementById("suggestions").classList.remove("show");
+    document.getElementById("suggestTriggerBtn").style.display = "none";
+  });
+
+  document.getElementById("swapBtn").addEventListener('click', () => {
+    const r = document.getElementById("resultText").textContent.trim();
+    if (r && r !== "—" && !r.includes("✖") && !r.includes("🔒") && r !== "(no Anyuak translation yet)") {
+      document.getElementById("inputText").value = r; translate();
+    }
+  });
+
+  document.getElementById("randomBtn").addEventListener('click', () => {
+    if (state.dict.length > 0) {
+      const randomIndex = Math.floor(Math.random() * state.dict.length);
+      const word = state.dict[randomIndex];
+      document.getElementById("inputText").value = word.eng;
+      translate();
+    } else {
+      showToast("Dictionary is empty");
+    }
+  });
+
+  document.getElementById("speakBtn").addEventListener('click', () => {
+    if (lastTranslation) {
+      const resText = document.getElementById("resultText").textContent.trim();
+      speakText(resText);
+    }
+  });
+
+  document.getElementById("shareWaBtn").addEventListener('click', () => {
+    if (lastTranslation) window.open(`https://wa.me/?text=${encodeURIComponent(`"${lastTranslation.eng}" in Anyuak → "${lastTranslation.any}"\n\nVia Anyuak Translator`)}`);
+  });
+
+  // BUG FIX #5: Fixed clipboard copy
+  document.getElementById("shareCopyBtn").addEventListener('click', () => {
+    if (lastTranslation) copyToClipboard(`"${lastTranslation.eng}" → "${lastTranslation.any}"`);
+  });
+
+  document.getElementById("suggestTriggerBtn").addEventListener('click', async () => {
+    if (state.isAdmin) {
+      document.getElementById("aw_eng").value = lastMissing;
+      document.getElementById("adminPanel").scrollIntoView({ behavior: "smooth" });
+    } else {
+      // BUG FIX #6: Log suggestion to Firebase (not just a toast)
+      showToast(`📝 "${lastMissing}" suggestion sent! We'll add it soon.`);
+      if (currentUser) {
+        try {
+          await addDoc(notifRef, {
+            userId: currentUser.id,
+            identifier: currentUser.identifier,
+            type: "word_suggestion",
+            message: `User suggested word: "${lastMissing}"`,
+            word: lastMissing,
+            createdAt: serverTimestamp()
+          });
+        } catch(e) { console.warn("Suggestion log failed:", e); }
+      }
+    }
+  });
+
+  document.getElementById("clearTransCountBtn").addEventListener('click', () => {
+    if (!confirm("Reset your translation count to 0?")) return;
+    userStats.totalTrans = 0;
+    saveUserStats();
+    updateStatsUI();
+    showToast("🔄 Translation count reset to 0");
+  });
+
+  document.getElementById("clearRecentBtn").addEventListener('click', () => {
+    state.recent = [];
+    localStorage.setItem("anyuak_recent", "[]");
+    renderRecent();
+    showToast("✅ Recently viewed cleared");
+  });
+
+  document.getElementById("recentList").addEventListener('click', e => {
+    const btn = e.target.closest("[data-recent]");
+    if (btn) {
+      document.getElementById("inputText").value = btn.dataset.recent;
+      translate();
+    }
+  });
+
+  // DICTIONARY
+  document.getElementById("dictToggleBtn").addEventListener('click', () => {
+    dictVisible = !dictVisible;
+    const s = UI_STRINGS[state.currentLang];
+    document.getElementById("wordList").classList.toggle("show", dictVisible);
+    document.getElementById("searchRow").style.display = dictVisible ? "flex" : "none";
+    document.getElementById("dictToggleBtn").textContent = dictVisible ? s.hide : s.show;
+    if (dictVisible) renderDict();
+  });
+  document.getElementById("dictCat").addEventListener('change', renderDict);
+  document.getElementById("searchInput").addEventListener('input', e => { searchTerm = e.target.value; renderDict(); });
+  document.getElementById("clearSearchBtn").addEventListener('click', () => {
+    document.getElementById("searchInput").value = ""; searchTerm = ""; renderDict();
+  });
+
+  // ADMIN: WORD FORM
+  document.getElementById("saveWordBtn").addEventListener('click', () => {
+    const id = document.getElementById("aw_id").value;
+    const eng = document.getElementById("aw_eng").value.trim().toLowerCase();
+    const any = document.getElementById("aw_any").value.trim();
+    if (!eng) return showToast("⚠️ English word is required");
+    if (!id && state.dict.some(w => w.eng.toLowerCase() === eng)) return showToast("⚠️ Word already exists in the cloud");
+    const wordObj = {
+      eng, any, cat: document.getElementById("aw_cat").value.toLowerCase(),
+      pron: document.getElementById("aw_pron").value.trim(),
+      defEng: document.getElementById("aw_def_eng").value.trim(),
+      defAny: document.getElementById("aw_def_any").value.trim(),
+      example: document.getElementById("aw_example").value.trim(),
+      synonyms: document.getElementById("aw_synonyms").value.trim(),
+      antonyms: document.getElementById("aw_antonyms").value.trim(),
+      explanation: document.getElementById("aw_explanation").value.trim(),
+    };
+    if (id) updateWordInFirebase(id, wordObj);
+    else addWordToFirebase(wordObj);
+    ["aw_id","aw_eng","aw_any","aw_pron","aw_def_eng","aw_def_any","aw_example","aw_synonyms","aw_antonyms","aw_explanation"].forEach(fid => {
+      const el = document.getElementById(fid); if (el) el.value = "";
+    });
+    document.getElementById("aw_cat").value = "general";
+  });
+  document.getElementById("clearWordFormBtn").addEventListener('click', () => {
+    ["aw_id","aw_eng","aw_any","aw_pron","aw_def_eng","aw_def_any","aw_example","aw_synonyms","aw_antonyms","aw_explanation"].forEach(fid => {
+      const el = document.getElementById(fid); if (el) el.value = "";
+    });
+    document.getElementById("aw_cat").value = "general";
+  });
+
+  // ADMIN: BULK IMPORT — Enhanced
+  document.getElementById("bulkPreviewBtn").addEventListener('click', previewBulk);
+
+  document.getElementById("bulkImportBtn").addEventListener('click', async () => {
+    const lines = document.getElementById("bulkText").value.split(/\r?\n/).filter(l => l.trim());
+    let added = 0, failed = 0, skipped = 0;
+
+    for (const line of lines) {
+      if (!line.trim() || line.trim().startsWith('#')) continue;
+      const parsed = parseBulkLine(line);
+      if (!parsed || parsed.error) { failed++; continue; }
+      if (state.dict.some(w => w.eng.toLowerCase() === parsed.eng)) { skipped++; continue; }
+      const ok = await addWordToFirebase(parsed);
+      if (ok) added++; else failed++;
+    }
+
+    document.getElementById("bulkText").value = "";
+    document.getElementById("bulkPreviewBox").classList.remove("show");
+    document.getElementById("bulkPreviewStats").style.display = "none";
+    showToast(`✅ Imported ${added}, Skipped ${skipped}${failed ? `, Failed ${failed}` : ''}`);
+  });
+
+  document.getElementById("bulkClearBtn").addEventListener('click', () => {
+    document.getElementById("bulkText").value = "";
+    document.getElementById("bulkPreviewBox").classList.remove("show");
+    document.getElementById("bulkPreviewStats").style.display = "none";
+  });
+
+  // EXPORT
+  document.getElementById("exportTxtBtn").addEventListener('click', exportAsTxt);
+  document.getElementById("exportJsonBtn").addEventListener('click', exportAsJson);
+  document.getElementById("exportCsvBtn").addEventListener('click', exportAsCsv);
+
+  // ADMIN: UNLOCK
+  document.getElementById("unlockBtn").addEventListener('click', async () => {
+    const id = document.getElementById("unlockId").value.trim();
+    const plan = document.getElementById("unlockPlan").value;
+    if (!id) return showToast("Enter user email or phone");
+    const res = await unlockUser(id, plan);
+    showToast(res.msg);
+    if (res.ok) { renderAdminUsers(); document.getElementById("unlockId").value = ""; }
+  });
+  document.getElementById("refreshPremiumBtn").addEventListener('click', () => { renderAdminUsers(); showToast("🔄 Refreshed"); });
+
+  document.getElementById("graceBtn").addEventListener('click', async () => {
+    const id = document.getElementById("graceId").value.trim();
+    if (!id) return showToast("Enter user email or phone");
+    const res = await unlockUser(id, "week");
+    showToast(res.msg);
+    if (res.ok) { renderAdminUsers(); document.getElementById("graceId").value = ""; }
+  });
+
+  document.getElementById("testExpBtn").addEventListener('click', async () => {
+    const id = document.getElementById("testExpId").value.trim();
+    if (!id) return showToast("Enter user email or phone");
+    const res = await unlockUser(id, "test5min");
+    showToast(res.msg);
+    if (res.ok) document.getElementById("testExpId").value = "";
+  });
+
+  document.getElementById("refreshTrendsBtn").addEventListener('click', renderTrends);
+  document.getElementById("clearTrendsBtn").addEventListener('click', async () => {
+    if (!confirm("Clear all search trends?")) return;
+    state.trends = {}; renderTrends(); showToast("✅ Trends cleared");
+  });
+  document.getElementById("refreshUsersBtn").addEventListener('click', () => { renderAdminUsers(); showToast(`👥 ${state.users.length} users`); });
+  document.getElementById("clearNotifBtn").addEventListener('click', async () => {
+    if (!confirm("Clear all notifications?")) return;
+    try {
+      const snap = await getDocs(notifRef);
+      for (const d of snap.docs) await deleteDoc(doc(db, "notifications", d.id));
+      showToast("Notifications cleared");
+    } catch(e) { showToast("Error clearing notifications"); }
+  });
+  document.getElementById("changePwdBtn").addEventListener('click', () => {
+    const pwd = document.getElementById("newPwd").value;
+    if (!pwd || pwd.length < 4) return showToast("Password too short (min 4 chars)");
+    ADMIN_PWD = pwd; localStorage.setItem("anyuak_admin_pwd", pwd);
+    document.getElementById("newPwd").value = ""; showToast("✅ Admin password updated");
+  });
+  document.getElementById("forceSaveBtn").addEventListener('click', () => showToast("ℹ️ Data is auto-synced to Firebase in real-time!"));
+  document.getElementById("testBadgeBtn").addEventListener('click', async () => {
+    if (!currentUser) return showToast("Log in as a user to test badges");
+    userStats.totalTrans = 500; userStats.streakDays = 30; userStats.quizHigh = 100;
+    saveUserStats(); updateStatsUI(); showToast("✅ Stats updated! Checking badges...");
+    await checkAllBadgesAndReward();
+  });
+  document.getElementById("exitAdminBtn").addEventListener('click', () => {
+    state.isAdmin = false;
+    document.getElementById("adminPanel").classList.remove("show");
+    renderDict(); updateFreeLimitBar(); showToast("Exited admin mode");
+  });
+
+  // QUIZ
+  document.getElementById("quizCat").addEventListener('change', e => { quizCategory = e.target.value; generateQuizQuestions(); });
+  document.getElementById("quizModeBtn").addEventListener('click', () => {
+    quizMode = quizMode === "eng-any" ? "any-eng" : "eng-any";
+    document.getElementById("quizModeBtn").textContent = quizMode === "eng-any" ? "Eng → Any" : "Any → Eng";
+    generateQuizQuestions();
+  });
+  document.getElementById("quizOpts").addEventListener('click', e => {
+    const opt = e.target.closest('.quiz-option');
+    if (opt && !quizAnswered) answerQuiz(opt.dataset.val);
+  });
+  document.getElementById("quizNextBtn").addEventListener('click', () => {
+    if (!quizQuestions.length || quizIndex >= quizQuestions.length) { generateQuizQuestions(); return; }
+    quizIndex++; renderQuizQuestion();
+  });
+
+  // Close modals on backdrop click
+  document.querySelectorAll('.overlay').forEach(ov => {
+    ov.addEventListener('click', e => { if (e.target === ov) ov.style.display = "none"; });
+  });
+}
+
+// ══════════════════════════════════════════════
+//  ADMIN LISTENERS
+// ══════════════════════════════════════════════
+function startAdminListeners() {
+  const notifQuery = query(notifRef, orderBy("createdAt", "desc"));
+  onSnapshot(notifQuery, (snapshot) => {
+    const list = document.getElementById("adminNotifications");
+    if (!list) return;
+    let html = "";
+    snapshot.forEach(d => {
+      const n = d.data();
+      const date = n.createdAt ? (n.createdAt.toDate ? n.createdAt.toDate() : new Date(n.createdAt)).toLocaleString() : "";
+      const typeIcon = n.type === "word_suggestion" ? "💡" : n.type === "all_badges" ? "🏆" : n.type === "registration" ? "📝" : "🔔";
+      html += `<div style="border-bottom:1px solid var(--border);padding:4px 0;">${typeIcon} <strong>${escapeHtml(n.identifier)}</strong>: ${escapeHtml(n.message)}<div style="font-size:.52rem;color:var(--text3);">${date}</div></div>`;
+    });
+    list.innerHTML = html || '<p style="color:var(--text3);">No notifications.</p>';
+  });
+}
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+async function init() {
+  applyTheme(state.currentTheme);
+
+  const cached = localStorage.getItem("anyuak_dict_v3");
+  if (cached) {
+    try { state.dict = JSON.parse(cached); sortDict(); renderDict(); updateStatsUI(); setWordOfDay(); } catch(e) {}
+  }
+
+  setupEvents();
+  renderRecent();
+  updateUILanguage();
+  updateFreeLimitBar();
+
+  // Non-blocking background tasks
+  restoreSession().catch(e => console.warn("Session restore failed:", e));
+  loadTrends().catch(e => console.warn("Trends load failed:", e));
+  detectVPN().catch(e => console.warn("VPN detection failed:", e));
+
+  updateConnStatus("Connecting...", "saving");
+
+  // Set a timeout for connection
+  const connectionTimeout = setTimeout(() => {
+    if (state.dict.length === 0) {
+      updateConnStatus("Connection slow / offline", "error");
+      document.getElementById("retryBtn").style.display = "inline-block";
+    }
+  }, 8000);
+
+  try {
+    startListeners();
+    // Listeners are async, if we get data, clear timeout
+    const checkDataInterval = setInterval(() => {
+      if (state.dict.length > 0) {
+        clearTimeout(connectionTimeout);
+        clearInterval(checkDataInterval);
+        document.getElementById("retryBtn").style.display = "none";
+      }
+    }, 500);
+  } catch (e) {
+    console.error("Failed to start listeners:", e);
+    updateConnStatus("Failed to connect", "error");
+  }
+
+  if (state.isAdmin) startAdminListeners();
+
+  setInterval(setWordOfDay, 30000);
+  setInterval(() => {
+    if (state.dict.length > 0) localStorage.setItem("anyuak_dict_v3", JSON.stringify(state.dict));
+  }, 30000);
+
+  document.getElementById("retryBtn").addEventListener('click', () => {
+    document.getElementById("retryBtn").style.display = "none";
+    updateConnStatus("Retrying...", "saving");
+    location.reload();
+  });
+
+  window.appState = state;
+  window.renderDict = renderDict;
+  window.isPremiumUser = isPremiumUser;
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(err => console.warn('SW registration failed:', err));
+  });
+}
+
+init();
+</script>
+</body>
+</html>
